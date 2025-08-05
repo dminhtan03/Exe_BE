@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     private final UserInfoRepository userInfoRepository;
     private final EmailService emailService;
     private final UserOtpRepository userOtpRepository;
-//    private final RedisService redisService;
+    private final RedisService redisService;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
 
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
             }
 
             String otp = generateAndActivateCode(user);
-//            redisService.setValue("otp:" + user.getUserInfo().getEmail(), otp, 5, TimeUnit.MINUTES);
+            redisService.setValue("otp:" + user.getUserInfo().getEmail(), otp, 5, TimeUnit.MINUTES);
 
             sendValidationEmail(user);
         } catch (CustomException e) {
@@ -183,56 +183,56 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     public void verifyForgotPassword(ForgotPasswordVerifyRequest request) {
-//        try {
-//            var userOpt = userRepository.findByEmail(request.getEmail())
-//                    .orElseThrow(() -> new CustomException(ResponseCode.USER_NOT_FOUND));
-//
-//            var userEmail = userOpt.getUserInfo().getEmail();
-//            var otpKey = "otp:" + userEmail;
-//            var otpInput = request.getOtp();
-//
-//            Object redisOtp = redisService.getValue(otpKey);
-//
-//            if (redisOtp != null) {
-//                String otpInRedis = redisOtp.toString();
-//                if (!otpInRedis.equals(otpInput)) {
-//                    throw new CustomException(ResponseCode.INVALID_OTP);
-//                }
-//
-//                redisService.delete(otpKey);
-//            } else {
-//                var otpInDbOpt = userOtpRepository.findValidOtp(userEmail, otpKey)
-//                        .orElseThrow(() -> new CustomException(ResponseCode.INVALID_OTP));
-//
-//                if (otpInDbOpt.isUsed()) {
-//                    throw new CustomException(ResponseCode.OTP_ALREADY_USED);
-//                }
-//
-//                if (LocalDateTime.now().isAfter(otpInDbOpt.getExpiresAt())) {
-//                    throw new CustomException(ResponseCode.EXPIRED_OTP);
-//                }
-//
-//                if (!otpInDbOpt.getOtpCode().equals(otpInput)) {
-//                    throw new CustomException(ResponseCode.INVALID_OTP);
-//                }
-//                otpInDbOpt.setUsed(true);
-//                otpInDbOpt.setValidatedAt(LocalDateTime.now());
-//                userOtpRepository.save(otpInDbOpt);
-//            }
-//
-//            var newPassword = generateRandomPassword();
-//            userOpt.setPassword(passwordEncoder.encode(newPassword));
-//            userOpt.setLocked(false);
-//            userOpt.setReset(true);
-//            userRepository.save(userOpt);
-//
-//            sendChangePasswordEmail(userOpt, newPassword);
-//        } catch (CustomException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            log.error("Unexpected error during forgot password verification", e);
-//            throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
-//        }
+        try {
+            var userOpt = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new CustomException(ResponseCode.USER_NOT_FOUND));
+
+            var userEmail = userOpt.getUserInfo().getEmail();
+            var otpKey = "otp:" + userEmail;
+            var otpInput = request.getOtp();
+
+            Object redisOtp = redisService.getValue(otpKey);
+
+            if (redisOtp != null) {
+                String otpInRedis = redisOtp.toString();
+                if (!otpInRedis.equals(otpInput)) {
+                    throw new CustomException(ResponseCode.INVALID_OTP);
+                }
+
+                redisService.delete(otpKey);
+            } else {
+                var otpInDbOpt = userOtpRepository.findValidOtp(userEmail, otpKey)
+                        .orElseThrow(() -> new CustomException(ResponseCode.INVALID_OTP));
+
+                if (otpInDbOpt.isUsed()) {
+                    throw new CustomException(ResponseCode.OTP_ALREADY_USED);
+                }
+
+                if (LocalDateTime.now().isAfter(otpInDbOpt.getExpiresAt())) {
+                    throw new CustomException(ResponseCode.EXPIRED_OTP);
+                }
+
+                if (!otpInDbOpt.getOtpCode().equals(otpInput)) {
+                    throw new CustomException(ResponseCode.INVALID_OTP);
+                }
+                otpInDbOpt.setUsed(true);
+                otpInDbOpt.setValidatedAt(LocalDateTime.now());
+                userOtpRepository.save(otpInDbOpt);
+            }
+
+            var newPassword = generateRandomPassword();
+            userOpt.setPassword(passwordEncoder.encode(newPassword));
+            userOpt.setLocked(false);
+            userOpt.setReset(true);
+            userRepository.save(userOpt);
+
+            sendChangePasswordEmail(userOpt, newPassword);
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error during forgot password verification", e);
+            throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -352,7 +352,7 @@ public class UserServiceImpl implements UserService {
         var actCode = generateActivationCode();
 
         String otpKey = "otp:" + user.getUserInfo().getEmail();
-//        redisService.setValue(otpKey, actCode, 1, TimeUnit.MINUTES);
+        redisService.setValue(otpKey, actCode, 1, TimeUnit.MINUTES);
 
         UserOtp otp = new UserOtp();
         otp.setId(UUID.randomUUID().toString());

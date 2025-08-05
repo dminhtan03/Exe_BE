@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-//    private final RedisService redisService;
+    private final RedisService redisService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserMapper userMapper;
 
@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 
             if (expirationMillis > 0) {
                 String key = "BlackList:" + accessToken;
-//                redisService.setValue(key, accessToken, expirationMillis, TimeUnit.MILLISECONDS);
+                redisService.setValue(key, accessToken, expirationMillis, TimeUnit.MILLISECONDS);
             }
 
             String refreshToken = null;
@@ -133,7 +133,7 @@ public class AuthServiceImpl implements AuthService {
                     throw new CustomException(ResponseCode.REFRESH_TOKEN_NOT_FOUND);
                 }
                 rfToken.setRevoked(true);
-//                redisService.deleteCacheToken(String.valueOf(rfToken.getId()));
+                redisService.deleteCacheToken(String.valueOf(rfToken.getId()));
                 refreshTokenRepository.save(rfToken);
             }
         } catch (CustomException e) {
@@ -146,43 +146,42 @@ public class AuthServiceImpl implements AuthService {
 
 
     public AuthResponse refreshToken(String refreshToken, HttpServletResponse response) {
-//        try {
-//            var tokenEntity = Optional.ofNullable(redisService.getCacheRefreshToken(refreshToken))
-//                    .orElseGet(() -> refreshTokenRepository.findByTokenAndIsRevoked(refreshToken));
-//
-//            if (tokenEntity == null) {
-//                throw new CustomException(ResponseCode.REFRESH_TOKEN_NOT_FOUND);
-//            }
-//
-//            User user = tokenEntity.getUser();
-//
-//            var claims = new HashMap<String, Object>();
-//            claims.put("user", user.getUserInfo().getFullName());
-//            String newAccessToken = jwtUtils.generateToken(claims, user);
-//
-//            String newRefreshToken = jwtUtils.generateRefreshToken(user);
-//            tokenEntity.setRevoked(true);
-//            refreshTokenRepository.save(tokenEntity);
-//            redisService.deleteCacheToken(refreshToken);
-//
-//            Cookie refreshTokenCookies = new Cookie("refreshToken", newRefreshToken);
-//            refreshTokenCookies.setHttpOnly(true);
-//            refreshTokenCookies.setSecure(true);
-//            refreshTokenCookies.setPath("/");
-//            refreshTokenCookies.setMaxAge((int) (refreshTokenExpiration / 1000));
-//            response.addCookie(refreshTokenCookies);
-//
-//            return AuthResponse.builder()
-//                    .accessToken(newAccessToken)
-//                    .refreshToken(newRefreshToken)
-//                    .build();
-//        } catch (CustomException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//            throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
-//        }
-            return  null;
+        try {
+            var tokenEntity = Optional.ofNullable(redisService.getCacheRefreshToken(refreshToken))
+                    .orElseGet(() -> refreshTokenRepository.findByTokenAndIsRevoked(refreshToken));
+
+            if (tokenEntity == null) {
+                throw new CustomException(ResponseCode.REFRESH_TOKEN_NOT_FOUND);
+            }
+
+            User user = tokenEntity.getUser();
+
+            var claims = new HashMap<String, Object>();
+            claims.put("user", user.getUserInfo().getFullName());
+            String newAccessToken = jwtUtils.generateToken(claims, user);
+
+            String newRefreshToken = jwtUtils.generateRefreshToken(user);
+            tokenEntity.setRevoked(true);
+            refreshTokenRepository.save(tokenEntity);
+            redisService.deleteCacheToken(refreshToken);
+
+            Cookie refreshTokenCookies = new Cookie("refreshToken", newRefreshToken);
+            refreshTokenCookies.setHttpOnly(true);
+            refreshTokenCookies.setSecure(true);
+            refreshTokenCookies.setPath("/");
+            refreshTokenCookies.setMaxAge((int) (refreshTokenExpiration / 1000));
+            response.addCookie(refreshTokenCookies);
+
+            return AuthResponse.builder()
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
