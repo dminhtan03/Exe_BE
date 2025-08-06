@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
 
     @Value("${application.character.value}")
     private String character;
-//
-//    @Value("${application.mailing.frontend.activation-url}")
+
+    @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
 
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
