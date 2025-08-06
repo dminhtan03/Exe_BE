@@ -1,16 +1,15 @@
 package com.demoProject.demo.common.config;
 
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
-@Data
-@Configuration
+@Getter
+@Setter
+@Component
+@ConfigurationProperties(prefix = "spring.data.redis")
 public class RedisProperties {
-
-    @Value("${redis.host}")
     private String host;
-
-    @Value("${redis.port}")
     private int port;
 }

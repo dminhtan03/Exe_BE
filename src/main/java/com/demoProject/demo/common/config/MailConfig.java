@@ -12,39 +12,51 @@ import java.util.Properties;
 public class MailConfig {
 
     @Value("${spring.mail.host}")
-    public String host;
+    private String host;
 
     @Value("${spring.mail.port}")
-    public int port;
+    private int port;
 
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-    public String auth;
+    @Value("${spring.mail.username}")
+    private String username;
 
-    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
-    public String starttls;
+    @Value("${spring.mail.password}")
+    private String password;
 
-    @Value("${spring.mail.properties.mail.smtp.connectiontimeout}")
-    public String connection_timeout;
+    @Value("${spring.mail.protocol:smtp}")
+    private String protocol;
 
-    @Value("${spring.mail.properties.mail.smtp.timeout}")
-    public String timeout;
+    @Value("${spring.mail.properties.mail.smtp.auth:true}")
+    private boolean auth;
 
-    @Value("${spring.mail.properties.mail.smtp.writetimeout}")
-    public String write_timeout;
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable:true}")
+    private boolean starttls;
+
+    @Value("${spring.mail.properties.mail.smtp.connectiontimeout:5000}")
+    private int connectionTimeout;
+
+    @Value("${spring.mail.properties.mail.smtp.timeout:5000}")
+    private int timeout;
+
+    @Value("${spring.mail.properties.mail.smtp.writetimeout:5000}")
+    private int writeTimeout;
 
     @Bean
     public JavaMailSender javaMailSender() {
-
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
         mailSender.setHost(host);
         mailSender.setPort(port);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
+        mailSender.setProtocol(protocol);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", auth);
         props.put("mail.smtp.starttls.enable", starttls);
-        props.put("mail.smtp.connectiontimeout", connection_timeout);
+        props.put("mail.smtp.connectiontimeout", connectionTimeout);
         props.put("mail.smtp.timeout", timeout);
-        props.put("mail.smtp.writetimeout", write_timeout);
+        props.put("mail.smtp.writetimeout", writeTimeout);
 
         return mailSender;
     }
