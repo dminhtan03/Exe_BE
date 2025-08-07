@@ -211,4 +211,5 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

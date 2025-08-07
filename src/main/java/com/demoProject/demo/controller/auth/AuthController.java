@@ -39,4 +39,8 @@ public class AuthController {
         return ResponseEntity.ok(Response.ofSucceeded(authService.refreshToken(refreshToken, response)));
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(HttpServletRequest request) {
+        return ResponseEntity.ok(Response.ofSucceeded(authService.getProfile(request)));
+    }
 }

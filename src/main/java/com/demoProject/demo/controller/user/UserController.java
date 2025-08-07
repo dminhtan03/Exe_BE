@@ -1,10 +1,7 @@
 package com.demoProject.demo.controller.user;
 
 import com.demoProject.demo.common.payload.Response;
-import com.demoProject.demo.model.dto.request.ChangePasswordRequest;
-import com.demoProject.demo.model.dto.request.ForgotPasswordRequest;
-import com.demoProject.demo.model.dto.request.ForgotPasswordVerifyRequest;
-import com.demoProject.demo.model.dto.request.RegistrationRequest;
+import com.demoProject.demo.model.dto.request.*;
 import com.demoProject.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -61,4 +58,12 @@ public class UserController {
     public ResponseEntity<?> getAllUser() {
         return ResponseEntity.ok(userService.getAllUser());
     }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<?> resendOtp(
+            @RequestBody ResendOtpRequest resendOtpRequest) {
+        userService.resendOtp(resendOtpRequest);
+        return ResponseEntity.ok(Response.ofSucceeded("Resend OTP successfully"));
+    }
+
 }
