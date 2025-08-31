@@ -397,4 +397,42 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toUserResponse)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public UserResponse updateProfile(UpdateProfileRequest request, Authentication authentication) {
+        try {
+            // Lấy email/username từ authentication (tùy bạn config trong JWT)
+            String email = authentication.getName();
+
+            // Tìm user theo email
+            var user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new CustomException(ResponseCode.USER_NOT_FOUND));
+
+            // Lấy userInfo gắn với user
+            var userInfo = user.getUserInfo();
+            if (userInfo == null) {
+                throw new CustomException(ResponseCode.USER_NOT_FOUND);
+            }
+
+            // Cập nhật thông tin từ request
+            userInfo.setFirstName(request.getFirstName());
+            userInfo.setLastName(request.getLastName());
+            userInfo.setPhoneNumber(request.getPhoneNumber());
+            userInfo.setGender(request.getGender());
+            userInfo.setAddress(request.getAddress());
+            userInfo.setDepartment(request.getDepartment());
+            // Lưu lại
+            userInfoRepository.save(userInfo);
+
+            // Trả response
+            return userMapper.toUserResponse(userInfo);
+
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error during update profile", e);
+            throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

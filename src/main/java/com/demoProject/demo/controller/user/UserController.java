@@ -66,4 +66,8 @@ public class UserController {
         return ResponseEntity.ok(Response.ofSucceeded("Resend OTP successfully"));
     }
 
+    @PutMapping("/updateProfile")
+    public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateProfileRequest request, Authentication authentication) {
+        return ResponseEntity.ok(Response.ofSucceeded(userService.updateProfile(request, authentication)));
+    }
 }

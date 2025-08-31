@@ -1,10 +1,10 @@
 package com.demoProject.demo.model.dto.response;
 
+import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Setter
+@Getter
 public class UserResponse {
     private String id;
 

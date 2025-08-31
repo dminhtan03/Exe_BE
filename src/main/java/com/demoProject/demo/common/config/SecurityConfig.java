@@ -28,6 +28,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/**",
                                 "/api/v1/user/register",
                                 "/api/v1/user/activate-account",
+                                "/api/v1/user/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources",
                                 "/swagger-resources/**",

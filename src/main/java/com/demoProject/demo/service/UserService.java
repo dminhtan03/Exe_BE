@@ -22,5 +22,7 @@ public interface UserService {
 
     void resendOtp(ResendOtpRequest request);
 
+    UserResponse updateProfile(UpdateProfileRequest request, Authentication authentication);
+
     List<UserResponse> getAllUser();
 }
