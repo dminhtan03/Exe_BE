@@ -17,4 +17,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByEmail(String username);
 
     int countByEnabled(boolean isEnabled);
+    Optional<User> findByUserInfoEmail(String email);
 }

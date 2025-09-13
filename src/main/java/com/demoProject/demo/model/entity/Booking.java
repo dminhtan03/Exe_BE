@@ -40,4 +40,16 @@ public class Booking {
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     private Payment payment;
+
+    @Column(name = "START_TIME")
+    private LocalDateTime startTime;
+
+    @Column(name = "END_TIME")
+    private LocalDateTime endTime;
+
+    @Column(name = "CHECKIN_TIME")
+    private LocalDateTime checkinTime;
+
+    @Column(name = "RETURN_TIME")
+    private LocalDateTime returnTime;
 }
