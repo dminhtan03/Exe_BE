@@ -23,7 +23,7 @@ public class CampingInforController {
     }
 
     // Cập nhật thông tin camping và dịch vụ kèm giá
-    @PutMapping("/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<CampingInforResponse> updateCamping(
             @PathVariable String id,
             @RequestBody CampingInforRequest request
@@ -44,7 +44,7 @@ public class CampingInforController {
     }
 
     // Xóa camping theo ID
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<String> deleteCamping(@PathVariable String id) {
         service.deleteCamping(id);
         return ResponseEntity.ok("Camping deleted successfully");

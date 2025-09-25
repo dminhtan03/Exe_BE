@@ -12,4 +12,5 @@ public class CampingInforRequest {
     private Double basePrice;       // Giá giữ chỗ
     private String thumbnail;
     private List<CampingServiceRequest> services; // Danh sách dịch vụ kèm giá
+    private Boolean active;  // 👈 Thêm field này để admin duyệt
 }

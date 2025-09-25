@@ -11,4 +11,16 @@ public interface CampingInforRepository extends JpaRepository<CampingInfor, Stri
 
     // Tìm camping theo tên
     List<CampingInfor> findByNameContainingIgnoreCase(String name);
+
+    // =================== Thêm cho Active ===================
+
+    // Lấy tất cả camping đã được duyệt (active = true)
+    List<CampingInfor> findByActiveTrue();
+
+    // Lấy tất cả camping chưa được duyệt (active = false)
+    List<CampingInfor> findByActiveFalse();
+
+    // Lấy tất cả camping của 1 owner theo trạng thái duyệt
+    List<CampingInfor> findByOwnerIdAndActiveTrue(String ownerId);
+    List<CampingInfor> findByOwnerIdAndActiveFalse(String ownerId);
 }

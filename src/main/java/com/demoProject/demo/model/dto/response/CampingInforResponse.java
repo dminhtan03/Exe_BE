@@ -18,6 +18,8 @@ public class CampingInforResponse {
     private Integer bookedCount;
     private Double revenue;
     private List<CampingServiceResponse> services;
+    private Boolean active;      // Admin duyệt
+    private Double rate;         // Trung bình đánh giá từ người dùng
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

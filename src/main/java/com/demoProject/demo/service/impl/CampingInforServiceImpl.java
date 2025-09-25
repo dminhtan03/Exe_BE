@@ -7,16 +7,13 @@ import com.demoProject.demo.model.dto.response.CampingServiceResponse;
 import com.demoProject.demo.model.entity.CampingInfor;
 import com.demoProject.demo.model.entity.CampingService;
 import com.demoProject.demo.model.entity.ServiceEntity;
-import com.demoProject.demo.model.entity.User;
 import com.demoProject.demo.model.entity.Owner;
 import com.demoProject.demo.repository.CampingInforRepository;
 import com.demoProject.demo.repository.ServiceRepository;
-import com.demoProject.demo.repository.UserRepository;
+import com.demoProject.demo.repository.OwnerRepository;
 import com.demoProject.demo.service.CampingInforService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.demoProject.demo.repository.OwnerRepository;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +28,7 @@ public class CampingInforServiceImpl implements CampingInforService {
 
     @Override
     public CampingInforResponse createCamping(CampingInforRequest request) {
-        Owner  owner = ownerRepository.findById(request.getOwnerId())
+        Owner owner = ownerRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new RuntimeException("Owner not found"));
 
         CampingInfor camping = CampingInfor.builder()
@@ -43,6 +40,8 @@ public class CampingInforServiceImpl implements CampingInforService {
                 .thumbnail(request.getThumbnail())
                 .bookedCount(0)
                 .revenue(0.0)
+                .active(false) // mặc định khi tạo mới là active
+                .rate(0.0)
                 .build();
 
         if (request.getServices() != null && !request.getServices().isEmpty()) {
@@ -63,7 +62,7 @@ public class CampingInforServiceImpl implements CampingInforService {
                 .orElseThrow(() -> new RuntimeException("Camping not found"));
 
         if (request.getOwnerId() != null) {
-            Owner  owner = ownerRepository.findById(request.getOwnerId())
+            Owner owner = ownerRepository.findById(request.getOwnerId())
                     .orElseThrow(() -> new RuntimeException("Owner not found"));
             camping.setOwner(owner);
         }
@@ -90,7 +89,7 @@ public class CampingInforServiceImpl implements CampingInforService {
     @Override
     public List<CampingInforResponse> getAllCamping() {
         return campingRepository.findAll().stream()
-                .map(this::toResponse)
+                .map(this::toResponse) // thêm active vào response
                 .collect(Collectors.toList());
     }
 
@@ -118,30 +117,33 @@ public class CampingInforServiceImpl implements CampingInforService {
                 .build();
     }
 
-    private CampingInforResponse toResponse(CampingInfor camping) {
-        List<CampingServiceResponse> services = camping.getServices() != null ?
-                camping.getServices().stream()
-                        .map(s -> CampingServiceResponse.builder()
-                                .id(s.getId())
-                                .serviceId(s.getService().getId())
-                                .serviceName(s.getService().getName())
-                                .price(s.getPrice())
-                                .build())
-                        .collect(Collectors.toList()) : List.of();
+   private CampingInforResponse toResponse(CampingInfor camping) {
+    List<CampingServiceResponse> services = camping.getServices() != null ?
+            camping.getServices().stream()
+                    .map(s -> CampingServiceResponse.builder()
+                            .id(s.getId())
+                            .serviceId(s.getService().getId())
+                            .serviceName(s.getService().getName())
+                            .price(s.getPrice())
+                            .build())
+                    .collect(Collectors.toList()) : List.of();
 
-        return CampingInforResponse.builder()
-                .id(camping.getId())
-                .ownerId(camping.getOwner() != null ? camping.getOwner().getId() : null)
-                .name(camping.getName())
-                .address(camping.getAddress())
-                .description(camping.getDescription())
-                .basePrice(camping.getBasePrice())
-                .thumbnail(camping.getThumbnail())
-                .bookedCount(camping.getBookedCount())
-                .revenue(camping.getRevenue())
-                .services(services)
-                .createdAt(camping.getCreatedAt())
-                .updatedAt(camping.getUpdatedAt())
-                .build();
-    }
+    return CampingInforResponse.builder()
+            .id(camping.getId())
+            .ownerId(camping.getOwner() != null ? camping.getOwner().getId() : null)
+            .name(camping.getName())
+            .address(camping.getAddress())
+            .description(camping.getDescription())
+            .basePrice(camping.getBasePrice())
+            .thumbnail(camping.getThumbnail())
+            .bookedCount(camping.getBookedCount())
+            .revenue(camping.getRevenue())
+            .active(camping.getActive())
+            .rate(camping.getRate())  // ← Thêm dòng này
+            .services(services)
+            .createdAt(camping.getCreatedAt())
+            .updatedAt(camping.getUpdatedAt())
+            .build();
+}
+
 }

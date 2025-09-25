@@ -49,6 +49,13 @@ public class CampingInfor {
     @OneToMany(mappedBy = "camping", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CampingService> services;
 
+    @Column(nullable = false)
+    private Boolean active = false; // Trường để admin duyệt
+
+    // Thêm trường rate
+    @Column(nullable = false)
+    private Double rate = 0.0; // Trung bình đánh giá từ người dùng, mặc định 0
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
