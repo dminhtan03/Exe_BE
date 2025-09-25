@@ -40,6 +40,8 @@ public class SecurityConfig {
                                 "/api/v1/service/**",
                                 "/api/v1/owners/**",
                                 "/actuator/**"
+                                "/actuator/**",
+                                 "/api/v1/**"
                         )
                         .permitAll()
                         .anyRequest()
