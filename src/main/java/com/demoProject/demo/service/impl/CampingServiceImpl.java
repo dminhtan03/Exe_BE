@@ -4,7 +4,9 @@ import com.demoProject.demo.common.enums.RoomStatus;
 import com.demoProject.demo.model.dto.request.SearchCampingRequest;
 import com.demoProject.demo.model.dto.response.SearchCampingResponse;
 import com.demoProject.demo.model.entity.CampingRoom;
+import com.demoProject.demo.model.entity.CampingSite;
 import com.demoProject.demo.repository.CampingRoomRepository;
+import com.demoProject.demo.repository.CampingSiteRepository;
 import com.demoProject.demo.service.CampingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 public class CampingServiceImpl implements CampingService {
 
     private final CampingRoomRepository campingRoomRepository;
-
+    private final CampingSiteRepository campingSiteRepository;
     @Override
     public List<SearchCampingResponse> searchCamping(SearchCampingRequest request) {
         List<CampingRoom> rooms = campingRoomRepository.findAvailableRooms(
@@ -38,5 +40,10 @@ public class CampingServiceImpl implements CampingService {
                     return response;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CampingSite> getAllCampingSites(){
+        return campingSiteRepository.findAll();
     }
 }
