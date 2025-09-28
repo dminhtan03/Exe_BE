@@ -48,5 +48,7 @@ public class UserInfo {
     public String getFullName() {
         return firstName + " " + lastName;
     }
-
+    
+    @Column(name = "AVATAR_URL")
+    private String avatarUrl;
 }
