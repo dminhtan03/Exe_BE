@@ -6,9 +6,9 @@ import com.demoProject.demo.model.dto.response.CampingInforResponse;
 import java.util.List;
 
 public interface CampingInforService {
-    CampingInforResponse createCamping(CampingInforRequest request);
-    CampingInforResponse updateCamping(String id, CampingInforRequest request);
-    List<CampingInforResponse> getAllCamping();
-    CampingInforResponse getCampingById(String id);
-    void deleteCamping(String id);
+CampingInforResponse createCamping(CampingInforRequest request);
+CampingInforResponse updateCamping(String id, CampingInforRequest request);
+List<CampingInforResponse> getAllCamping();
+CampingInforResponse getCampingById(String id);
+void deleteCamping(String id);
 }

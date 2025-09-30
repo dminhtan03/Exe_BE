@@ -25,6 +25,11 @@ public class CampingInfor {
     @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 
+    // Tham chiếu tới City
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;
+
     @Column(nullable = false, length = 155)
     private String name;
 
@@ -34,31 +39,40 @@ public class CampingInfor {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = "base_price", nullable = false)
     private Double basePrice;
 
     @Column(length = 500)
     private String thumbnail;
 
-    @Column(nullable = false)
+    @Column(name = "booked_count", nullable = false)
     private Integer bookedCount = 0;
 
     @Column(nullable = false)
     private Double revenue = 0.0;
 
+    // Quan hệ 1-nhiều với dịch vụ
     @OneToMany(mappedBy = "camping", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CampingService> services;
+
+    // Quan hệ 1-nhiều với lều
+    @OneToMany(mappedBy = "camping", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CampingTent> tents;
+
+    // Quan hệ 1-nhiều với gallery
+    @OneToMany(mappedBy = "camping", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CampingGallery> galleries;
 
     @Column(nullable = false)
     private Boolean active = false; // Trường để admin duyệt
 
-    // Thêm trường rate
     @Column(nullable = false)
-    private Double rate = 0.0; // Trung bình đánh giá từ người dùng, mặc định 0
+    private Double rate = 0.0; // Trung bình đánh giá từ người dùng
 
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @PrePersist

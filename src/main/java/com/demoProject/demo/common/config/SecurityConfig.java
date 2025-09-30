@@ -39,9 +39,11 @@ public class SecurityConfig {
                                 "/api/v1/camping/**",
                                 "/api/v1/service/**",
                                 "/api/v1/owners/**",
-                                "/actuator/**"
                                 "/actuator/**",
-                                 "/api/v1/**"
+                                 "/api/v1/**",
+                                 "/api/cities/**",
+                                 "/api/tents/**",
+                                 "/api/galleries/**"
                         )
                         .permitAll()
                         .anyRequest()

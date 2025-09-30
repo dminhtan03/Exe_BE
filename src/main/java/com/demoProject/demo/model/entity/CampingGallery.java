@@ -5,13 +5,13 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tbl_camping_service")
+@Table(name = "tbl_camping_gallery")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CampingService {
+public class CampingGallery {
 
     @Id
     @Column(name = "id", nullable = false, length = 36)
@@ -21,23 +21,16 @@ public class CampingService {
     @JoinColumn(name = "camping_id", nullable = false)
     private CampingInfor camping;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id") // nullable để custom service có thể null
-    private ServiceEntity service; // Dịch vụ có sẵn
+    @Column(length = 500, nullable = false)
+    private String imageUrl;
 
-    @Column(length = 100)
-    private String customName; // Dịch vụ tự tạo, không cần service_id
-
-    @Column(nullable = false)
-    private Double price; // Giá dịch vụ theo camping
-
-    @Column(length = 500)
-    private String imageUrl; // Ảnh mô tả cho service
-
+    // Tự động gán ID trước khi persist
     @PrePersist
     protected void onCreate() {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
     }
+
+    // Bỏ description
 }
