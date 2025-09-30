@@ -23,4 +23,5 @@ public class UpdateProfileRequest {
     @NotBlank(message = "Department is mandatory")
     private String department;
 
+    private String avatarUrl;
 }
