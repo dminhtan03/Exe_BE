@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param; 
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -61,4 +63,18 @@ List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.
 
     // Lấy 5 booking mới nhất (hóa đơn gần nhất)
     List<Booking> findTop5ByOrderByCreatedAtDesc();
+
+
+    Page<Booking> findByIdContainingIgnoreCase(String id, Pageable pageable);
+
+    // Tìm kiếm theo startTime và endTime
+    Page<Booking> findByStartTimeBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    // Kết hợp bookingId + startTime + endTime
+    Page<Booking> findByIdContainingIgnoreCaseAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(
+            String id,
+            LocalDateTime start,
+            LocalDateTime end,
+            Pageable pageable
+    );
 }
