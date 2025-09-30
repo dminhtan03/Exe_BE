@@ -23,4 +23,6 @@ public class UserResponse {
     private String gender;
 
     private boolean isReset;
+
+    private String avatarUrl;
 }

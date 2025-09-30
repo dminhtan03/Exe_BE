@@ -1,5 +1,6 @@
 package com.demoProject.demo.controller.user;
 
+import com.demoProject.demo.model.dto.response.CampingRoomListResponse;
 import com.demoProject.demo.model.entity.CampingSite;
 import com.demoProject.demo.service.CampingService;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,10 @@ public class CampingSiteController {
     @GetMapping
     public ResponseEntity<List<CampingSite>> getAllCampingSites() {
         return ResponseEntity.ok(campingservice.getAllCampingSites());
+    }
+
+    @GetMapping("/rooms")
+    public ResponseEntity<List<CampingRoomListResponse>> getAllCampingRooms() {
+        return ResponseEntity.ok(campingservice.getAllCampingRooms());
     }
 }

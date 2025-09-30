@@ -421,6 +421,9 @@ public class UserServiceImpl implements UserService {
             userInfo.setGender(request.getGender());
             userInfo.setAddress(request.getAddress());
             userInfo.setDepartment(request.getDepartment());
+            if (request.getAvatarUrl() != null) {
+                userInfo.setAvatarUrl(request.getAvatarUrl());
+            }
             // Lưu lại
             userInfoRepository.save(userInfo);
 
