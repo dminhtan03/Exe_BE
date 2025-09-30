@@ -2,6 +2,7 @@ package com.demoProject.demo.service.impl;
 
 import com.demoProject.demo.common.enums.RoomStatus;
 import com.demoProject.demo.model.dto.request.SearchCampingRequest;
+import com.demoProject.demo.model.dto.response.CampingRoomListResponse;
 import com.demoProject.demo.model.dto.response.SearchCampingResponse;
 import com.demoProject.demo.model.entity.CampingRoom;
 import com.demoProject.demo.model.entity.CampingSite;
@@ -45,5 +46,21 @@ public class CampingServiceImpl implements CampingService {
     @Override
     public List<CampingSite> getAllCampingSites(){
         return campingSiteRepository.findAll();
+    }
+
+    @Override
+    public List<CampingRoomListResponse> getAllCampingRooms() {
+        return campingRoomRepository.findAll().stream().map(room -> {
+            CampingRoomListResponse dto = new CampingRoomListResponse();
+            dto.setRoomId(room.getId());
+            dto.setRoomName(room.getName());
+            dto.setDescription(room.getDescription());
+            dto.setCapacity(room.getCapacity());
+            dto.setPricePerNight(room.getPricePerNight());
+            dto.setSiteName(room.getCampingSite().getName());
+            dto.setAvatarUrl(room.getAvatarUrl());
+            dto.setLocation(room.getCampingSite().getLocation());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
