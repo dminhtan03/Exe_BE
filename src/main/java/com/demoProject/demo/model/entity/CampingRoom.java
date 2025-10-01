@@ -44,7 +44,4 @@ public class CampingRoom {
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
     private List<Amenity> amenities;
-
-    @Column(name = "AVATAR_URL")
-    private String avatarUrl;
 }

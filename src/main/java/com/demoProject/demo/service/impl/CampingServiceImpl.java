@@ -58,8 +58,11 @@ public class CampingServiceImpl implements CampingService {
             dto.setCapacity(room.getCapacity());
             dto.setPricePerNight(room.getPricePerNight());
             dto.setSiteName(room.getCampingSite().getName());
-            dto.setAvatarUrl(room.getAvatarUrl());
             dto.setLocation(room.getCampingSite().getLocation());
+            // Add this line to map image URLs
+            dto.setImageUrls(room.getImages() != null
+                    ? room.getImages().stream().map(img -> img.getImageUrl()).toList()
+                    : List.of());
             return dto;
         }).collect(Collectors.toList());
     }
