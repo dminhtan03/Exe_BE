@@ -5,15 +5,15 @@ import java.util.List;
 
 @Data
 public class CampingInforRequest {
-    private String ownerId;  // ID User tạo camping
-    private String cityId;   // ← Thêm ID city
+    private String userId;  // ID User tạo camping
+    private String campingSiteId;   // ID camping site
     private String name;
     private String address;
     private String description;
-    private Double basePrice;       // Giá giữ chỗ
+    private Double basePrice;
     private String thumbnail;
-    private Boolean active;         // Admin duyệt
-    private List<CampingServiceRequest> services; // Danh sách dịch vụ kèm giá
-    private List<CampingTentRequest> tents;       // ← Thêm field tents
-    private List<CampingGalleryRequest> galleries; // ← Thêm field galleries
+    private Boolean active;
+    private List<CampingServiceRequest> services;
+    private List<CampingTentRequest> tents;
+    private List<CampingGalleryRequest> galleries;
 }

@@ -34,5 +34,5 @@ public class CampingSite {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "campingSite", cascade = CascadeType.ALL)
-    private List<CampingRoom> rooms;
+    private List<CampingInfor> rooms;
 }

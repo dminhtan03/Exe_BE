@@ -2,7 +2,6 @@ package com.demoProject.demo.controller;
 
 import com.demoProject.demo.model.dto.request.OwnerRequest;
 import com.demoProject.demo.model.dto.response.OwnerResponse;
-import com.demoProject.demo.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

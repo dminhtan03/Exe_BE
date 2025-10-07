@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Data
 @Setter
 @Getter
@@ -14,6 +16,6 @@ public class CampingRoomListResponse {
     private Integer capacity;
     private Double pricePerNight;
     private String siteName;
-    private String avatarUrl;
     private String location;
+    private List<String> imageUrls;
 }

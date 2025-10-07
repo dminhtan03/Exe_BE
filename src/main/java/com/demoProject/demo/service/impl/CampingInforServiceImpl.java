@@ -17,23 +17,23 @@ public class CampingInforServiceImpl implements CampingInforService {
 
     private final CampingInforRepository campingRepository;
     private final ServiceRepository serviceRepository;
-    private final OwnerRepository ownerRepository;
-    private final CityRepository cityRepository;
+    private final UserRepository userRepository;
+    private final CampingSiteRepository campingSiteRepository;
 
     @Override
     public CampingInforResponse createCamping(CampingInforRequest request) {
-        Owner owner = ownerRepository.findById(request.getOwnerId())
-                .orElseThrow(() -> new RuntimeException("Owner not found"));
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        City city = null;
-        if (request.getCityId() != null) {
-            city = cityRepository.findById(request.getCityId())
-                    .orElseThrow(() -> new RuntimeException("City not found"));
+        CampingSite campingSite = null;
+        if (request.getCampingSiteId() != null) {
+            campingSite = campingSiteRepository.findById(request.getCampingSiteId())
+                    .orElseThrow(() -> new RuntimeException("Camping site not found"));
         }
 
         CampingInfor camping = CampingInfor.builder()
-                .owner(owner)
-                .city(city)
+                .owner(user)
+                .campingSite(campingSite)
                 .name(request.getName())
                 .address(request.getAddress())
                 .description(request.getDescription())
@@ -81,16 +81,16 @@ public class CampingInforServiceImpl implements CampingInforService {
         CampingInfor camping = campingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Camping not found"));
 
-        if (request.getOwnerId() != null) {
-            Owner owner = ownerRepository.findById(request.getOwnerId())
-                    .orElseThrow(() -> new RuntimeException("Owner not found"));
-            camping.setOwner(owner);
+        if (request.getUserId() != null) {
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            camping.setOwner(user);
         }
 
-        if (request.getCityId() != null) {
-            City city = cityRepository.findById(request.getCityId())
-                    .orElseThrow(() -> new RuntimeException("City not found"));
-            camping.setCity(city);
+        if (request.getCampingSiteId() != null) {
+            CampingSite campingSite = campingSiteRepository.findById(request.getCampingSiteId())
+                    .orElseThrow(() -> new RuntimeException("Camping site not found"));
+            camping.setCampingSite(campingSite);
         }
 
         camping.setName(request.getName());
@@ -154,25 +154,24 @@ public class CampingInforServiceImpl implements CampingInforService {
 
     // ---------------- Private helpers ----------------
 
-private CampingService mapToCampingService(CampingServiceRequest request) {
-    ServiceEntity service = null;
-    String customName = null;
+    private CampingService mapToCampingService(CampingServiceRequest request) {
+        ServiceEntity service = null;
+        String customName = null;
 
-    if (request.getServiceId() != null) {
-        service = serviceRepository.findById(request.getServiceId())
-                .orElseThrow(() -> new RuntimeException("Service not found: " + request.getServiceId()));
-    } else if (request.getCustomName() != null) {
-        customName = request.getCustomName();
+        if (request.getServiceId() != null) {
+            service = serviceRepository.findById(request.getServiceId())
+                    .orElseThrow(() -> new RuntimeException("Service not found: " + request.getServiceId()));
+        } else if (request.getCustomName() != null) {
+            customName = request.getCustomName();
+        }
+
+        return CampingService.builder()
+                .service(service)
+                .customName(customName)
+                .price(request.getPrice())
+                .imageUrl(request.getImageUrl())
+                .build();
     }
-
-    return CampingService.builder()
-            .service(service)
-            .customName(customName)
-            .price(request.getPrice())
-            .imageUrl(request.getImageUrl())  // Cập nhật trường imageUrl
-            .build();
-}
-
 
     private CampingTent mapToCampingTent(CampingTentRequest request) {
         return CampingTent.builder()
@@ -225,9 +224,9 @@ private CampingService mapToCampingService(CampingServiceRequest request) {
 
         return CampingInforResponse.builder()
                 .id(camping.getId())
-                .ownerId(camping.getOwner() != null ? camping.getOwner().getId() : null)
-                .cityId(camping.getCity() != null ? camping.getCity().getId() : null)
-                .cityName(camping.getCity() != null ? camping.getCity().getName() : null)
+                .userId(camping.getOwner() != null ? camping.getOwner().getId() : null)
+                .campingSiteId(camping.getCampingSite() != null ? camping.getCampingSite().getId() : null)
+                .campingSiteName(camping.getCampingSite() != null ? camping.getCampingSite().getName() : null)
                 .name(camping.getName())
                 .address(camping.getAddress())
                 .description(camping.getDescription())

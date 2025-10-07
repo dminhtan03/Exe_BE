@@ -4,11 +4,13 @@ import com.demoProject.demo.model.dto.request.SearchCampingRequest;
 import com.demoProject.demo.model.dto.response.CampingRoomListResponse;
 import com.demoProject.demo.model.dto.response.SearchCampingResponse;
 import com.demoProject.demo.model.entity.CampingSite;
+import com.demoProject.demo.model.dto.response.CampingSiteSimpleResponse;
 
 import java.util.List;
 
 public interface CampingService {
     List<SearchCampingResponse> searchCamping(SearchCampingRequest request);
-    List<CampingSite> getAllCampingSites();
+    List<CampingSiteSimpleResponse> getAllCampingSiteLocations();
     List<CampingRoomListResponse> getAllCampingRooms();
+
 }

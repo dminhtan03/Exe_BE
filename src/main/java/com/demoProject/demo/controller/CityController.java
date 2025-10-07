@@ -2,7 +2,6 @@ package com.demoProject.demo.controller;
 
 import com.demoProject.demo.model.dto.request.CityRequest;
 import com.demoProject.demo.model.dto.response.CityResponse;
-import com.demoProject.demo.service.CityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

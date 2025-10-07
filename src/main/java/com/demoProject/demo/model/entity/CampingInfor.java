@@ -22,13 +22,13 @@ public class CampingInfor {
 
     // Tham chiếu tới Owner
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private Owner owner;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User owner;
 
     // Tham chiếu tới City
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "city_id", nullable = false)
-    private City city;
+    @JoinColumn(name = "camping_site_id", nullable = false)
+    private CampingSite campingSite;
 
     @Column(nullable = false, length = 155)
     private String name;
