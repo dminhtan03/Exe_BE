@@ -60,7 +60,7 @@ public class CampingInfor {
     private List<CampingTent> tents;
 
     // Quan hệ 1-nhiều với gallery
-    @OneToMany(mappedBy = "camping", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "campingInfor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CampingGallery> galleries;
 
     @Column(nullable = false)
@@ -81,6 +81,14 @@ public class CampingInfor {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "tbl_camping_amenity",
+            joinColumns = @JoinColumn(name = "camping_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id")
+    )
+    private List<Amenity> amenities;
 
     @PreUpdate
     protected void onUpdate() {

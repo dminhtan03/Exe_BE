@@ -112,8 +112,8 @@ public class InvoiceAdminServiceImpl implements InvoiceAdminService {
 
     private InvoiceDetailDTO mapDetailToDTO(BookingDetail detail) {
         return new InvoiceDetailDTO(
-                detail.getRoom().getId(),
-                detail.getRoom().getName(),
+                detail.getCampingInfor().getId(),
+                detail.getCampingInfor().getName(),
                 detail.getCheckInDate().toString(),
                 detail.getCheckOutDate().toString(),
                 detail.getPrice()

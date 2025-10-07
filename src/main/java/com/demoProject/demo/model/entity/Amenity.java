@@ -23,5 +23,5 @@ public class Amenity {
     private String iconUrl;
 
     @ManyToMany(mappedBy = "amenities")
-    private List<CampingInfor> rooms;
+    private List<CampingInfor> room;
 }
