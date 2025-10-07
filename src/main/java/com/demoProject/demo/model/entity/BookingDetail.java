@@ -22,8 +22,8 @@ public class BookingDetail {
     private Booking booking;
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
-    private CampingRoom room;
+    @JoinColumn(name = "campingInfor_id", nullable = false)
+    private CampingInfor room;
 
     private LocalDate checkInDate;
     private LocalDate checkOutDate;

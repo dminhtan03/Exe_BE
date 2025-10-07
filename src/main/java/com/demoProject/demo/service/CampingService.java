@@ -12,4 +12,5 @@ public interface CampingService {
     List<SearchCampingResponse> searchCamping(SearchCampingRequest request);
     List<CampingSiteSimpleResponse> getAllCampingSiteLocations();
     List<CampingRoomListResponse> getAllCampingRooms();
+
 }
