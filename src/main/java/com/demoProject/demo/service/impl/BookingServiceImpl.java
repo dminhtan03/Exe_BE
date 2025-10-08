@@ -4,7 +4,7 @@ package com.demoProject.demo.service.impl;
     import com.demoProject.demo.model.dto.request.BookingRequest;
     import com.demoProject.demo.model.dto.response.BookingResponse;
     import com.demoProject.demo.model.entity.Booking;
-    import com.demoProject.demo.model.entity.CampingRoom;
+    import com.demoProject.demo.model.entity.CampingInfor;
     import com.demoProject.demo.model.entity.User;
     import com.demoProject.demo.repository.BookingRepository;
     import com.demoProject.demo.repository.CampingRoomRepository;
@@ -33,7 +33,7 @@ package com.demoProject.demo.service.impl;
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
             // Check if the room exists
-            CampingRoom room = campingRoomRepository.findById(request.getRoomId())
+            CampingInfor room = campingRoomRepository.findById(request.getRoomId())
                     .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
             // Create the Booking object

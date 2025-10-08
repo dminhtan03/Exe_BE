@@ -9,21 +9,21 @@ import java.util.List;
 @Builder
 public class CampingInforResponse {
     private String id;
-    private String ownerId;
-    private String cityId;       // ID của thành phố
-    private String cityName;     // Tên của thành phố
+    private String userId;
+    private String campingSiteId;
+    private String campingSiteName;
     private String name;
     private String address;
-    private String description;  // Mô tả camping
-    private Double basePrice;    // Giá giữ chỗ
-    private String thumbnail;    // Ảnh đại diện
-    private Integer bookedCount; // Số lượt đặt
-    private Double revenue;      // Doanh thu
-    private List<CampingServiceResponse> services;  // Danh sách dịch vụ
-    private List<CampingTentResponse> tents;       // Danh sách lều
-    private List<CampingGalleryResponse> galleries; // Danh sách hình ảnh
-    private Boolean active;      // Admin duyệt
-    private Double rate;         // Trung bình đánh giá
+    private String description;
+    private Double basePrice;
+    private String thumbnail;
+    private Integer bookedCount;
+    private Double revenue;
+    private List<CampingServiceResponse> services;
+    private List<CampingTentResponse> tents;
+    private List<CampingGalleryResponse> galleries;
+    private Boolean active;
+    private Double rate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

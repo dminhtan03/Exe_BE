@@ -7,7 +7,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Data
@@ -23,6 +22,6 @@ public class Amenity {
     private String name;
     private String iconUrl;
 
-    @ManyToMany(mappedBy = "amenities")
-    private List<CampingRoom> rooms;
+    // @ManyToMany(mappedBy = "amenities")
+    // private List<CampingInfor> rooms;
 }
