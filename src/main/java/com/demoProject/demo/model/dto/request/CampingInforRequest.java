@@ -13,6 +13,7 @@ public class CampingInforRequest {
     private Double basePrice;
     private String thumbnail;
     private Boolean active;
+    private Integer capacity; // số lượng chỗ cho khu camping
     private List<CampingServiceRequest> services;
     private List<CampingTentRequest> tents;
     private List<CampingGalleryRequest> galleries;

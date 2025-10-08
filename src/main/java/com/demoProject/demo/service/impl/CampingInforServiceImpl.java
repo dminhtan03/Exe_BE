@@ -7,12 +7,14 @@ import com.demoProject.demo.repository.*;
 import com.demoProject.demo.service.CampingInforService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CampingInforServiceImpl implements CampingInforService {
 
     private final CampingInforRepository campingRepository;
@@ -26,8 +28,8 @@ public class CampingInforServiceImpl implements CampingInforService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         CampingSite campingSite = null;
-        if (request.getCampingSiteId() != null) {
-            campingSite = campingSiteRepository.findById(request.getCampingSiteId())
+        if (request.getCampingSiteId() != null && !request.getCampingSiteId().isBlank()) {
+            campingSite = campingSiteRepository.findById(request.getCampingSiteId().trim())
                     .orElseThrow(() -> new RuntimeException("Camping site not found"));
         }
 
@@ -37,12 +39,13 @@ public class CampingInforServiceImpl implements CampingInforService {
                 .name(request.getName())
                 .address(request.getAddress())
                 .description(request.getDescription())
-                .basePrice(request.getBasePrice())
+                .basePrice(request.getBasePrice() != null ? request.getBasePrice() : 0.0)
                 .thumbnail(request.getThumbnail())
                 .bookedCount(0)
                 .revenue(0.0)
-                .active(false)
+                .active(request.getActive() != null ? request.getActive() : false)
                 .rate(0.0)
+                .capacity(request.getCapacity() != null ? request.getCapacity() : 0) 
                 .build();
 
         // Services
@@ -87,17 +90,20 @@ public class CampingInforServiceImpl implements CampingInforService {
             camping.setOwner(user);
         }
 
-        if (request.getCampingSiteId() != null) {
-            CampingSite campingSite = campingSiteRepository.findById(request.getCampingSiteId())
+        if (request.getCampingSiteId() != null && !request.getCampingSiteId().isBlank()) {
+            CampingSite campingSite = campingSiteRepository.findById(request.getCampingSiteId().trim())
                     .orElseThrow(() -> new RuntimeException("Camping site not found"));
             camping.setCampingSite(campingSite);
+        } else {
+            camping.setCampingSite(null);
         }
 
-        camping.setName(request.getName());
-        camping.setAddress(request.getAddress());
-        camping.setDescription(request.getDescription());
-        camping.setBasePrice(request.getBasePrice());
-        camping.setThumbnail(request.getThumbnail());
+        if (request.getName() != null) camping.setName(request.getName());
+        if (request.getAddress() != null) camping.setAddress(request.getAddress());
+        if (request.getDescription() != null) camping.setDescription(request.getDescription());
+        if (request.getBasePrice() != null) camping.setBasePrice(request.getBasePrice());
+        if (request.getThumbnail() != null) camping.setThumbnail(request.getThumbnail());
+        if (request.getActive() != null) camping.setActive(request.getActive());
 
         // Update Services
         if (request.getServices() != null) {
@@ -149,7 +155,15 @@ public class CampingInforServiceImpl implements CampingInforService {
 
     @Override
     public void deleteCamping(String id) {
-        campingRepository.deleteById(id);
+        CampingInfor camping = campingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Camping not found"));
+
+        // Xóa child entities để tránh lỗi foreign key
+        if (camping.getServices() != null) camping.getServices().clear();
+        if (camping.getTents() != null) camping.getTents().clear();
+        if (camping.getGalleries() != null) camping.getGalleries().clear();
+
+        campingRepository.delete(camping);
     }
 
     // ---------------- Private helpers ----------------
@@ -168,7 +182,7 @@ public class CampingInforServiceImpl implements CampingInforService {
         return CampingService.builder()
                 .service(service)
                 .customName(customName)
-                .price(request.getPrice())
+                .price(request.getPrice() != null ? request.getPrice() : 0.0)
                 .imageUrl(request.getImageUrl())
                 .build();
     }
@@ -176,9 +190,9 @@ public class CampingInforServiceImpl implements CampingInforService {
     private CampingTent mapToCampingTent(CampingTentRequest request) {
         return CampingTent.builder()
                 .tentName(request.getTentName())
-                .capacity(request.getCapacity())
-                .pricePerNight(request.getPricePerNight())
-                .quantity(request.getQuantity())
+                .capacity(request.getCapacity() != null ? request.getCapacity() : 0)
+                .pricePerNight(request.getPricePerNight() != null ? request.getPricePerNight() : 0.0)
+                .quantity(request.getQuantity() != null ? request.getQuantity() : 1)
                 .thumbnail(request.getThumbnail())
                 .build();
     }

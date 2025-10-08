@@ -26,9 +26,10 @@ public class CampingInfor {
     private User owner;
 
     // Tham chiếu tới City
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "camping_site_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "camping_site_id")
     private CampingSite campingSite;
+
 
     @Column(nullable = false, length = 155)
     private String name;
@@ -50,6 +51,10 @@ public class CampingInfor {
 
     @Column(nullable = false)
     private Double revenue = 0.0;
+
+    //  Thêm trường số lượng chỗ (capacity)
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity = 0; // số lượng chỗ cho khu camping
 
     // Quan hệ 1-nhiều với dịch vụ
     @OneToMany(mappedBy = "camping", cascade = CascadeType.ALL, orphanRemoval = true)
