@@ -31,7 +31,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository.findByUserInfoEmail(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        CampingInfor room = campingInforRepository.findById(request.getRoomId())
+        CampingInfor room = campingInforRepository.findById(request.getCampingInforId())
                 .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
         Booking booking = new Booking();
@@ -55,6 +55,7 @@ public class BookingServiceImpl implements BookingService {
             tentDetail.setId(UUID.randomUUID().toString());
             tentDetail.setBooking(booking);
             tentDetail.setPrice(tent.getPricePerNight());
+            tentDetail.setRoom(room);
             // tentDetail.setRoom(room); // If needed
             details.add(tentDetail);
         }
@@ -98,7 +99,7 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("Access denied");
         }
 
-        CampingInfor room = campingInforRepository.findById(request.getRoomId())
+        CampingInfor room = campingInforRepository.findById(request.getCampingInforId())
                 .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
         booking.setCampingSite(room.getCampingSite());

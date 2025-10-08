@@ -19,7 +19,7 @@ public class BookingRequest {
     private String campingSiteId;
 
     @NotNull
-    private String roomId;
+    private String campingInforId;
 
     private String campingTentId;
     private List<String> campingServiceIds;
