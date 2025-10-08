@@ -5,7 +5,7 @@ import com.demoProject.demo.model.dto.response.CampingRoomListResponse;
 import com.demoProject.demo.model.dto.response.SearchCampingResponse;
 import com.demoProject.demo.model.entity.CampingInfor;
 import com.demoProject.demo.model.entity.CampingTent;
-import com.demoProject.demo.repository.CampingRoomRepository;
+import com.demoProject.demo.repository.CampingInforRepository;
 import com.demoProject.demo.repository.CampingSiteRepository;
 import com.demoProject.demo.service.CampingService;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CampingServiceImpl implements CampingService {
 
-    private final CampingRoomRepository campingRoomRepository;
+    private final CampingInforRepository campingInforRepository;
     private final CampingSiteRepository campingSiteRepository;
     @Override
     public List<SearchCampingResponse> searchCamping(SearchCampingRequest request) {
-        List<CampingInfor> campingInfors = campingRoomRepository.findAvailableCampingInfors(
+        List<CampingInfor> campingInfors = campingInforRepository.findAvailableCampingInfors(
                 request.getDestination(),
                 request.getStartTime(),
                 request.getEndTime()
@@ -60,7 +60,7 @@ public class CampingServiceImpl implements CampingService {
     // Maps CampingInfor to CampingRoomListResponse using related entities
     @Override
     public List<CampingRoomListResponse> getAllCampingRooms() {
-        return campingRoomRepository.findAll().stream().map(room -> {
+        return campingInforRepository.findAll().stream().map(room -> {
             CampingRoomListResponse dto = new CampingRoomListResponse();
             dto.setRoomId(room.getId());
             dto.setRoomName(room.getName());

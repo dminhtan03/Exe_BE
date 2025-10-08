@@ -2,6 +2,7 @@ package com.demoProject.demo.model.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -34,7 +35,7 @@ public class RegisterPartnerRequest {
     @NotBlank(message = "Description is mandatory")
     private String description_camping;
 
-    @NotBlank(message = "Image camping is mandatory")
+    @NotEmpty(message = "Image camping is mandatory")
     private List<String> imageUrls;
 
     @NotBlank(message = "Role is mandatory")

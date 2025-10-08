@@ -2,6 +2,7 @@ package com.demoProject.demo.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.UUID;
 
 @Entity

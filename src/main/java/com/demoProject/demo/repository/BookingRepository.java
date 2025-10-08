@@ -77,4 +77,6 @@ List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.
             LocalDateTime end,
             Pageable pageable
     );
+
+    List<Booking> findByUserId(String userId);
 }

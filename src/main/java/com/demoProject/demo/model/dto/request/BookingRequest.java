@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +20,9 @@ public class BookingRequest {
 
     @NotNull
     private String roomId;
+
+    private String campingTentId;
+    private List<String> campingServiceIds;
 
     @NotNull
     private LocalDateTime startTime;
