@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @Column(name = "IS_LOCKED")
     private boolean isLocked;
 
+    @Column(name = "approve_status_partner")
+    private String approveStatus;
+
     @Column(name = "IS_RESET")
     private boolean isReset;
 

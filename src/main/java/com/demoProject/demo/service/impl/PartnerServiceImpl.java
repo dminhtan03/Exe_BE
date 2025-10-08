@@ -32,10 +32,6 @@ public class PartnerServiceImpl implements PartnerService {
     @Transactional
     public RegisterPartnerResponse registerPartner(RegisterPartnerRequest request) {
 
-        var users = userRepository.findByEmail(request.getEmail());
-        if (users.isPresent()) {
-            throw new CustomException(ResponseCode.EMAIL_ALREADY_EXISTS);
-        }
         // Create UserInfo
         UserInfo userInfo = new UserInfo();
         userInfo.setId(UUID.randomUUID().toString());
@@ -53,6 +49,7 @@ public class PartnerServiceImpl implements PartnerService {
         user.setUserInfo(userInfo);
         user.setEnabled(false);
         user.setCreatedAt(LocalDateTime.now());
+        user.setApproveStatus("PENDING");
         user.setRoles(Set.of(
                 roleRepository.findRoleByName("PARTNER")
                         .orElseThrow(() -> new RuntimeException("Role PARTNER not found"))
