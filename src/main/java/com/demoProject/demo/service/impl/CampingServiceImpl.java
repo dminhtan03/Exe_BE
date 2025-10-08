@@ -11,6 +11,7 @@ import com.demoProject.demo.repository.CampingSiteRepository;
 import com.demoProject.demo.service.CampingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.demoProject.demo.model.dto.response.CampingSiteSimpleResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,8 +45,13 @@ public class CampingServiceImpl implements CampingService {
     }
 
     @Override
-    public List<CampingSite> getAllCampingSites(){
-        return campingSiteRepository.findAll();
+    public List<CampingSiteSimpleResponse> getAllCampingSiteLocations() {
+        return campingSiteRepository.findAll().stream().map(site -> {
+            CampingSiteSimpleResponse dto = new CampingSiteSimpleResponse();
+            dto.setId(site.getId());
+            dto.setLocation(site.getLocation());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -58,8 +64,11 @@ public class CampingServiceImpl implements CampingService {
             dto.setCapacity(room.getCapacity());
             dto.setPricePerNight(room.getPricePerNight());
             dto.setSiteName(room.getCampingSite().getName());
-            dto.setAvatarUrl(room.getAvatarUrl());
             dto.setLocation(room.getCampingSite().getLocation());
+            // Add this line to map image URLs
+            dto.setImageUrls(room.getImages() != null
+                    ? room.getImages().stream().map(img -> img.getImageUrl()).toList()
+                    : List.of());
             return dto;
         }).collect(Collectors.toList());
     }

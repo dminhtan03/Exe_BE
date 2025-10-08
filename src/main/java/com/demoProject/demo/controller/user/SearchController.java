@@ -20,4 +20,6 @@ public class SearchController {
         var response = campingService.searchCamping(request);
         return ResponseEntity.ok(response);
     }
+
+
 }
