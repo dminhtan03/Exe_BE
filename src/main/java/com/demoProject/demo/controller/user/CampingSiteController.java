@@ -23,7 +23,7 @@ public class CampingSiteController {
         return ResponseEntity.ok(campingservice.getAllCampingSiteLocations());
     }
 
-    @GetMapping("/rooms")
+    @GetMapping("/campinginfor")
     public ResponseEntity<List<CampingRoomListResponse>> getAllCampingRooms() {
         return ResponseEntity.ok(campingservice.getAllCampingRooms());
     }

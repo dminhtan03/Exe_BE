@@ -1,6 +1,8 @@
 package com.demoProject.demo.controller.user;
 
 import com.demoProject.demo.model.dto.request.BookingRequest;
+import com.demoProject.demo.model.dto.request.UpdateBookingRequest;
+import com.demoProject.demo.model.dto.response.BookingByUserIdResponse;
 import com.demoProject.demo.model.dto.response.BookingResponse;
 import com.demoProject.demo.model.entity.Booking;
 import com.demoProject.demo.service.BookingService;
@@ -28,24 +30,31 @@ public class BookingController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable String userId) {
-        List<Booking> bookings = bookingService.getBookingsByUserId(userId);
-        return ResponseEntity.ok(bookings);
+    public ResponseEntity<List<BookingByUserIdResponse>> getBookingsByUserId(@PathVariable String userId) {
+        List<BookingByUserIdResponse> responses = bookingService.getBookingsByUserId(userId);
+        return ResponseEntity.ok(responses);
     }
 
     @PutMapping("/{bookingId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BookingResponse> updateBooking(
             @PathVariable String bookingId,
-            @Validated @RequestBody BookingRequest request) {
+            @Validated @RequestBody UpdateBookingRequest request) {
         BookingResponse response = bookingService.updateBooking(bookingId, request);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{bookingId}")
+    @PutMapping("/{bookingId}/cancel")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deleteBooking(@PathVariable String bookingId) {
-        bookingService.deleteBooking(bookingId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> cancelBooking(@PathVariable String bookingId) {
+        try {
+            bookingService.cancelBooking(bookingId);
+            return ResponseEntity.ok("Booking cancelled successfully");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().body("Failed to cancel booking");
+        }
     }
+
 }

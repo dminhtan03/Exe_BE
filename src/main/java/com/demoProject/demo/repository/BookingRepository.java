@@ -1,6 +1,7 @@
 package com.demoProject.demo.repository;
 
 import com.demoProject.demo.model.entity.Booking;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param; 
@@ -78,5 +79,12 @@ List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.
             Pageable pageable
     );
 
+//    @EntityGraph(attributePaths = {
+//            "details",
+//            "details.room",
+//            "details.campingTent",
+//            "details.campingService",
+//            "details.campingService.service"
+//    })
     List<Booking> findByUserId(String userId);
 }

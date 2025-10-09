@@ -63,7 +63,6 @@ public class CampingServiceImpl implements CampingService {
         return campingInforRepository.findAll().stream().map(room -> {
             CampingRoomListResponse dto = new CampingRoomListResponse();
             dto.setRoomId(room.getId());
-            dto.setRoomName(room.getName());
             dto.setDescription(room.getDescription());
 
             // Get first tent info if available

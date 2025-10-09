@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 public class CampingRoomListResponse {
     private String roomId;
-    private String roomName;
     private String description;
     private Integer capacity;
     private Double pricePerNight;

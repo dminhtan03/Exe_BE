@@ -25,6 +25,14 @@ public class BookingDetail {
     @JoinColumn(name = "camping_infor_id", referencedColumnName = "id")
     private CampingInfor room;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "camping_tent_id")
+    private CampingTent campingTent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "camping_service_id")
+    private CampingService campingService;
+
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private Double price;
