@@ -27,4 +27,5 @@ public class CampingSiteController {
     public ResponseEntity<List<CampingRoomListResponse>> getAllCampingRooms() {
         return ResponseEntity.ok(campingservice.getAllCampingRooms());
     }
+
 }

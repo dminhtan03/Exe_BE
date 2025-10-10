@@ -21,7 +21,9 @@ public class CampingGallery {
     @JoinColumn(name = "camping_id", nullable = false)
     private CampingInfor camping;
 
-    @Column(length = 500, nullable = false)
+//    @Column(length = 500, nullable = false)
+    @Lob
+    @Column(name = "image_url", columnDefinition = "LONGTEXT")
     private String imageUrl;
 
     // Tự động gán ID trước khi persist
