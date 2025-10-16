@@ -1,6 +1,7 @@
 package com.demoProject.demo.service.impl;
 
 import com.demoProject.demo.model.dto.request.SearchCampingRequest;
+import com.demoProject.demo.model.dto.response.CampingInforResponse;
 import com.demoProject.demo.model.dto.response.CampingRoomListResponse;
 import com.demoProject.demo.model.dto.response.SearchCampingResponse;
 import com.demoProject.demo.model.entity.CampingInfor;
@@ -84,5 +85,34 @@ public class CampingServiceImpl implements CampingService {
 
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CampingInforResponse> getCampingRoomsBySiteId(String campingSiteId) {
+        return campingInforRepository.findAll().stream()
+                .filter(room -> room.getCampingSite() != null && room.getCampingSite().getId().equals(campingSiteId))
+                .map(room -> {
+                    return CampingInforResponse.builder()
+                            .id(room.getId())
+                            .userId(room.getOwner() != null ? room.getOwner().getId() : null)
+                            .campingSiteId(room.getCampingSite() != null ? room.getCampingSite().getId() : null)
+                            .campingSiteName(room.getCampingSite() != null ? room.getCampingSite().getName() : null)
+                            .name(room.getName())
+                            .address(room.getAddress())
+                            .description(room.getDescription())
+                            .basePrice(room.getBasePrice())
+                            .thumbnail(room.getThumbnail())
+                            .bookedCount(room.getBookedCount())
+                            .revenue(room.getRevenue())
+                            .active(room.getActive())
+                            .rate(room.getRate())
+                            .services(null) // You can map services if needed
+                            .tents(null)    // You can map tents if needed
+                            .galleries(null) // You can map galleries if needed
+                            .createdAt(room.getCreatedAt())
+                            .updatedAt(room.getUpdatedAt())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }

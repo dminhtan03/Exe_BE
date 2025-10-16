@@ -2,10 +2,15 @@ package com.demoProject.demo.model.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @Builder
 public class CampingInforResponse {
     private String id;
