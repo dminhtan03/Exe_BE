@@ -21,9 +21,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 @RequiredArgsConstructor
 public class EmailService {
+
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine emailTemplateEngine;
 
+    /**
+     * Gửi email xác thực tài khoản người dùng (dùng Thymeleaf template)
+     */
     @Async
     public void sendEmail(
             String to,
@@ -35,7 +39,7 @@ public class EmailService {
     ) throws MessagingException {
         String templateName;
 
-        if(emailTemplateName == null) {
+        if (emailTemplateName == null) {
             templateName = "confirm-email";
         } else {
             templateName = emailTemplateName.getName();
@@ -66,4 +70,24 @@ public class EmailService {
         javaMailSender.send(mimeMessage);
     }
 
+    /**
+     * Gửi email HTML tuỳ chỉnh (dùng khi phê duyệt đối tác, cấp mật khẩu,...)
+     *
+     * @param to        địa chỉ email người nhận
+     * @param subject   tiêu đề email
+     * @param htmlBody  nội dung HTML của email
+     */
+    @Async
+    public void sendHtmlEmail(String to, String subject, String htmlBody) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+        helper.setFrom("ntdat14092003@gmail.com");
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlBody, true); // true => nội dung là HTML
+
+        javaMailSender.send(mimeMessage);
+        log.info("✅ Email HTML đã gửi thành công tới {}", to);
+    }
 }

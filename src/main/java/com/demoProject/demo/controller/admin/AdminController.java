@@ -17,10 +17,6 @@ public class AdminController {
 
     private final AdminUserService adminService;
 
-    @GetMapping("/hello")
-    public String helloWorld() {
-        return "Hello World!";
-    }
 
     // Danh sách user/partner (search + phân trang)
     @GetMapping
@@ -44,7 +40,7 @@ public class AdminController {
     public ResponseEntity<Page<AdminUserResponse>> getListPartners(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(adminService.getUsersByRole("PARTNER", page, size));
+        return ResponseEntity.ok(adminService.getListPartApprove("PARTNER", page, size,"APPROVED"));
     }
 
     // Xem chi tiết

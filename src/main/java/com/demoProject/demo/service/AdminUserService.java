@@ -11,6 +11,8 @@ public interface AdminUserService {
 
      Page<AdminUserResponse> getUsersByRole(String roleName, int page, int size);
 
+     Page<AdminUserResponse> getListPartApprove(String roleName, int page, int size, String partnerStatus);
+
     Optional<AdminUserResponse> getUserDetail(String id);
 
     Optional<AdminUserResponse> updateUser(String id, AdminUserRequest request);
