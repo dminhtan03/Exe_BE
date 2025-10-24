@@ -71,6 +71,7 @@ public class PartRequestServiceImpl implements PartRequestService {
         // Sinh mật khẩu ngẫu nhiên
         String rawPassword = generateRandomPassword();
         partner.setPassword(passwordEncoder.encode(rawPassword));
+        partner.setEnabled(true);
         partner.setApproveStatus("APPROVED");
         userRepository.save(partner);
 
