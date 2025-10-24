@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CampingGalleryRepository extends JpaRepository<CampingGallery, String> {
     List<CampingGallery> findByCamping_Id(String campingId);
+    // Find galleries by the parent CampingSite id (through CampingInfor.campingSite)
+    List<CampingGallery> findByCamping_CampingSite_Id(String campingSiteId);
 }

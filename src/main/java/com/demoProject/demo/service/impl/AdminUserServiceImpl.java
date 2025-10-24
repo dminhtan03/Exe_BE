@@ -56,6 +56,20 @@ public class AdminUserServiceImpl implements AdminUserService {
         return users.map(this::mapToResponse);
     }
 
+     /**
+     * Retrieves a paginated list of users filtered by their role.
+     *
+     * @param roleName the name of the role (e.g., "ADMIN")
+     * @param page     the page number (0-based)
+     * @param size     the number of records per page
+     * @return a page of {@link AdminUserResponse}
+     */
+    @Override
+    public Page<AdminUserResponse> getListPartApprove(String roleName, int page, int size, String partnerStatus) {
+        Page<User> users = userRepository.findByRoleNameAndPartnerStatus(roleName, partnerStatus, PageRequest.of(page, size));
+        return users.map(this::mapToResponse);
+    }
+
     /**
      * Retrieves the details of a specific user by ID.
      *
