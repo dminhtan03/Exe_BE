@@ -1,10 +1,14 @@
 package com.demoProject.demo.controller;
 
 import com.demoProject.demo.model.dto.request.CampingInforRequest;
+import com.demoProject.demo.model.dto.response.BookingByCampingIdResponse;
+import com.demoProject.demo.model.dto.response.BookingByUserIdResponse;
 import com.demoProject.demo.model.dto.response.CampingInforResponse;
 import com.demoProject.demo.service.CampingInforService;
+import com.demoProject.demo.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +19,20 @@ import java.util.List;
 public class CampingInforController {
 
     private final CampingInforService service;
+    private final BookingService bookingService;
 
     // Tạo camping mới kèm danh sách dịch vụ
     @PostMapping
     public ResponseEntity<CampingInforResponse> createCamping(@RequestBody CampingInforRequest request) {
         return ResponseEntity.ok(service.createCamping(request));
+    }
+
+    //xem thông tin booking
+//    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/booking/{campingId}")
+    public ResponseEntity<List<BookingByCampingIdResponse>> getBookingsByCampingId(@PathVariable String campingId) {
+        List<BookingByCampingIdResponse> responses = bookingService.getBookingsByCampingId(campingId);
+        return ResponseEntity.ok(responses);
     }
 
     // Cập nhật thông tin camping và dịch vụ kèm giá

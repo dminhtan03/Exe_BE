@@ -10,4 +10,6 @@ public interface CampingTentService {
     List<CampingTentResponse> getTentsByCamping(String campingId);
     CampingTentResponse updateTent(String id, CampingTentRequest request);
     void deleteTent(String id);
+    CampingTentResponse getTentById(String id);
+
 }

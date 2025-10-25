@@ -21,9 +21,15 @@ public class CampingTentController {
         return ResponseEntity.ok(tentService.createTent(request));
     }
 
-    @GetMapping("/{campingId}")
+    @GetMapping("byCampingId/{campingId}")
     public ResponseEntity<List<CampingTentResponse>> getTents(@PathVariable String campingId) {
         return ResponseEntity.ok(tentService.getTentsByCamping(campingId));
+    }
+
+    @GetMapping("byTentId/{id}")
+    public ResponseEntity<CampingTentResponse> getTentById(@PathVariable String id) {
+        CampingTentResponse tent = tentService.getTentById(id);
+        return ResponseEntity.ok(tent);
     }
 
     @PutMapping("/{id}")

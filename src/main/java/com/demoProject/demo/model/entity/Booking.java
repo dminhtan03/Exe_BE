@@ -23,9 +23,13 @@ public class Booking {
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // khách đặt
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "camping_site_id", nullable = false)
     private CampingSite campingSite;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "camping_infor_id", nullable = false)
+    private CampingInfor campingInfor;
 
     private Double totalPrice;
 

@@ -3,6 +3,7 @@ package com.demoProject.demo.service.impl;
 import com.demoProject.demo.common.enums.BookingStatus;
 import com.demoProject.demo.model.dto.request.BookingRequest;
 import com.demoProject.demo.model.dto.request.UpdateBookingRequest;
+import com.demoProject.demo.model.dto.response.BookingByCampingIdResponse;
 import com.demoProject.demo.model.dto.response.BookingByUserIdResponse;
 import com.demoProject.demo.model.dto.response.BookingResponse;
 import com.demoProject.demo.model.entity.*;
@@ -52,6 +53,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setUser(user);
         // Dùng campingInfor.getCampingSite() để đảm bảo nhất quán
         booking.setCampingSite(campingInfor.getCampingSite());
+        booking.setCampingInfor(campingInfor);// lấy cả them cả campinginforId để lấy booking cho owner xem
         booking.setStartTime(request.getStartTime());
         booking.setEndTime(request.getEndTime());
         booking.setTotalPrice(request.getTotalPrice());
@@ -131,6 +133,58 @@ public class BookingServiceImpl implements BookingService {
 
         for (Booking booking : bookings) {
             BookingByUserIdResponse resp = new BookingByUserIdResponse();
+            resp.setBookingId(booking.getId());
+            resp.setUserId(booking.getUser() != null ? booking.getUser().getId() : null);
+            resp.setCampingSiteId(booking.getCampingSite() != null ? booking.getCampingSite().getId() : null);
+
+            String campingInforId = null;
+            String campingTentId = null;
+            List<String> serviceNames = new ArrayList<>();
+
+            if (booking.getDetails() != null && !booking.getDetails().isEmpty()) {
+                for (BookingDetail detail : booking.getDetails()) {
+                    // room
+                    if (detail.getRoom() != null) {
+                        campingInforId = detail.getRoom().getId();
+                    }
+                    // tent
+                    if (detail.getCampingTent() != null) {
+                        campingTentId = detail.getCampingTent().getId();
+                    }
+                    // service (ưu tiên tên service trong ServiceEntity, nếu null thì customName)
+                    if (detail.getCampingService() != null) {
+                        CampingService cs = detail.getCampingService();
+                        if (cs.getService() != null && cs.getService().getName() != null) {
+                            serviceNames.add(cs.getService().getName());
+                        } else if (cs.getCustomName() != null) {
+                            serviceNames.add(cs.getCustomName());
+                        }
+                    }
+                }
+            }
+
+            resp.setCampingInforId(campingInforId);
+            resp.setCampingTentId(campingTentId);
+            resp.setServiceNames(serviceNames);
+            resp.setStartTime(booking.getStartTime());
+            resp.setEndTime(booking.getEndTime());
+            resp.setTotalPrice(booking.getTotalPrice());
+            resp.setStatus(booking.getStatus() != null ? booking.getStatus().name() : null);
+
+            responses.add(resp);
+        }
+
+        return responses;
+    }
+
+
+    public List<BookingByCampingIdResponse> getBookingsByCampingId(String campingId) {
+        // Gợi ý: repository nên dùng EntityGraph hoặc JOIN FETCH để load details + nested relationships
+        List<Booking> bookings = bookingRepository.findByCampingId(campingId);
+        List<BookingByCampingIdResponse> responses = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+            BookingByCampingIdResponse resp = new BookingByCampingIdResponse();
             resp.setBookingId(booking.getId());
             resp.setUserId(booking.getUser() != null ? booking.getUser().getId() : null);
             resp.setCampingSiteId(booking.getCampingSite() != null ? booking.getCampingSite().getId() : null);

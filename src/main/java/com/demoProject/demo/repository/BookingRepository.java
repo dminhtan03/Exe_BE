@@ -62,6 +62,7 @@ List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.
            "ORDER BY bookingCount DESC")
     List<Object[]> findTopUsersByBookingCount(LocalDateTime startDate, LocalDateTime endDate);
 
+
     // Lấy 5 booking mới nhất (hóa đơn gần nhất)
     List<Booking> findTop5ByOrderByCreatedAtDesc();
 
@@ -87,4 +88,10 @@ List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.
 //            "details.campingService.service"
 //    })
     List<Booking> findByUserId(String userId);
+
+    @Query("SELECT b FROM Booking b WHERE b.campingInfor.id = :campingId")
+    List<Booking> findByCampingId(@Param("campingId") String campingId);
+
+
+
 }

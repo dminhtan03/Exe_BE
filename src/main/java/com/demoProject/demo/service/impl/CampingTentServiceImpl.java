@@ -38,6 +38,13 @@ public class CampingTentServiceImpl implements CampingTentService {
         return mapToResponse(tent);
     }
 
+        @Override
+        public CampingTentResponse getTentById(String id) {
+            CampingTent tent = tentRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Tent not found"));
+            return mapToResponse(tent);
+        }
+
     @Override
     public List<CampingTentResponse> getTentsByCamping(String campingId) {
         return tentRepository.findByCamping_Id(campingId)
@@ -45,6 +52,7 @@ public class CampingTentServiceImpl implements CampingTentService {
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public CampingTentResponse updateTent(String id, CampingTentRequest request) {
