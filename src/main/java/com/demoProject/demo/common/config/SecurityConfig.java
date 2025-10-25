@@ -43,7 +43,8 @@ public class SecurityConfig {
                                  "/api/v1/**",
                                  "/api/cities/**",
                                  "/api/tents/**",
-                                 "/api/galleries/**"
+                                 "/api/galleries/**",
+                                "/api/v1/marketplace/**"
                         )
                         .permitAll()
                         .anyRequest()
