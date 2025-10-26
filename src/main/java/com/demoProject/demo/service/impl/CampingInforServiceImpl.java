@@ -175,17 +175,18 @@ public class CampingInforServiceImpl implements CampingInforService {
         if (request.getServiceId() != null) {
             service = serviceRepository.findById(request.getServiceId())
                     .orElseThrow(() -> new RuntimeException("Service not found: " + request.getServiceId()));
-        } else if (request.getCustomName() != null) {
-            customName = request.getCustomName();
+        } else if (request.getCustomName() != null && !request.getCustomName().isEmpty()) {
+            customName = request.getCustomName().trim();
         }
 
-        return CampingService.builder()
-                .service(service)
-                .customName(customName)
-                .price(request.getPrice() != null ? request.getPrice() : 0.0)
-                .imageUrl(request.getImageUrl())
-                .build();
+        CampingService campingService = new CampingService();
+        campingService.setService(service);
+        campingService.setCustomName(customName);
+        campingService.setPrice(request.getPrice() != null ? request.getPrice() : 0.0);
+        campingService.setImageUrl(request.getImageUrl());
+        return campingService;
     }
+
 
     private CampingTent mapToCampingTent(CampingTentRequest request) {
         return CampingTent.builder()
