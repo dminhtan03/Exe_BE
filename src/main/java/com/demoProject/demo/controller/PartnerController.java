@@ -3,6 +3,7 @@ package com.demoProject.demo.controller;
 
 import com.demoProject.demo.common.payload.Response;
 import com.demoProject.demo.model.dto.request.RegisterPartnerRequest;
+import com.demoProject.demo.model.dto.response.RegisterPartnerResponse;
 import com.demoProject.demo.service.PartnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class PartnerController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerPartner(@Valid @RequestBody RegisterPartnerRequest request) {
-        partnerService.registerPartner(request);
-        return ResponseEntity.ok(Response.ofSucceeded(partnerService.registerPartner(request)));
+        RegisterPartnerResponse result = partnerService.registerPartner(request); // call once
+        return ResponseEntity.ok(Response.ofSucceeded(result));
     }
 }

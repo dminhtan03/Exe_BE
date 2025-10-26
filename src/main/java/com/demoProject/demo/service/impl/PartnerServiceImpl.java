@@ -32,6 +32,10 @@ public class PartnerServiceImpl implements PartnerService {
     @Transactional
     public RegisterPartnerResponse registerPartner(RegisterPartnerRequest request) {
 
+        if (userInfoRepository.existsByEmail(request.getEmail())) {
+            throw new CustomException(ResponseCode.EMAIL_ALREADY_EXISTS);
+        }
+
         // Create UserInfo
         UserInfo userInfo = new UserInfo();
         userInfo.setId(UUID.randomUUID().toString());
