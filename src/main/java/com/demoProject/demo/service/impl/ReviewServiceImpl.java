@@ -2,6 +2,7 @@ package com.demoProject.demo.service.impl;
 
 import com.demoProject.demo.common.enums.BookingStatus;
 import com.demoProject.demo.model.dto.request.ReviewRequest;
+import com.demoProject.demo.model.dto.response.ReviewRespone;
 import com.demoProject.demo.model.entity.*;
 import com.demoProject.demo.repository.*;
 import com.demoProject.demo.service.ReviewService;
@@ -70,5 +71,22 @@ public class ReviewServiceImpl implements ReviewService {
         double avg = reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
         campingInfor.setRate(avg);
         campingInforRepository.save(campingInfor);
+    }
+
+    @Override
+    public List<ReviewRespone> getReviewsByCampingInforId(String campingInforId) {
+        return reviewRepository.findByCampingInfor_Id(campingInforId)
+                .stream()
+                .map(r -> {
+                    ReviewRespone response = new ReviewRespone();
+                    response.setUserId(r.getUser().getId());
+                    response.setUserName(r.getUser().getUserInfo().getFullName());
+                    response.setCampingInforId(r.getCampingInfor().getId());
+                    response.setBookingId(r.getBooking().getId());
+                    response.setRating(r.getRating());
+                    response.setComment(r.getComment());
+                    return response;
+                })
+                .toList();
     }
 }

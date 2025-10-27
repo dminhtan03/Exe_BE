@@ -181,7 +181,9 @@ public class BookingServiceImpl implements BookingService {
         return responses;
     }
 
-
+    // ==========================
+    // Get bookings by camping id
+    // ==========================
     @Override
     public Page<BookingByCampingIdResponse> getBookingsByCampingId(String campingId, int page, int size) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1), Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -357,4 +359,28 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.save(booking);
     }
+    @Override
+    @Transactional
+    public void completedBooking(String bookingId) {
+        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        User user = userRepository.findByUserInfoEmail(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 🔹 2. Tìm booking theo ID
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+        // 🔹 4. Chỉ cho phép hủy nếu booking đang ở trạng thái "PENDING"
+        if (!"PENDING".equalsIgnoreCase(booking.getStatus().name())) {
+            throw new IllegalArgumentException("Only PENDING bookings can be cancelled");
+        }
+
+        // 🔹 5. Cập nhật trạng thái sang "CANCELLED"
+        booking.setStatus(BookingStatus.COMPLETED);
+        booking.setUpdatedAt(LocalDateTime.now());
+
+        bookingRepository.save(booking);
+    }
+
 }
+
