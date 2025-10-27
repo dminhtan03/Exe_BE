@@ -90,8 +90,5 @@ List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.
     List<Booking> findByUserId(String userId);
 
     @Query("SELECT b FROM Booking b WHERE b.campingInfor.id = :campingId")
-    List<Booking> findByCampingId(@Param("campingId") String campingId);
-
-
-
+    Page<Booking> findByCampingId(@Param("campingId") String campingId, Pageable pageable);
 }

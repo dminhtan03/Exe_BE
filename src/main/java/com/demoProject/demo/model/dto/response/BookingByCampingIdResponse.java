@@ -1,5 +1,6 @@
 package com.demoProject.demo.model.dto.response;
 
+import com.demoProject.demo.model.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,8 @@ import java.util.List;
 @Data
 public class BookingByCampingIdResponse {
     private String bookingId;
-    private String userId;
+    private String UserId;
+    private String userName;
     private String campingSiteId;
     private String campingInforId;
     private String campingTentId;
@@ -21,4 +23,5 @@ public class BookingByCampingIdResponse {
     private LocalDateTime endTime;
     private Double totalPrice;
     private String status; // e.g. "CONFIRMED", "CANCELLED"
+    private LocalDateTime createdAt;
 }

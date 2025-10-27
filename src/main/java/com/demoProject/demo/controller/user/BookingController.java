@@ -36,7 +36,6 @@ public class BookingController {
         return ResponseEntity.ok(responses);
     }
 
-
     @PutMapping("/{bookingId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BookingResponse> updateBooking(

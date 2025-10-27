@@ -25,6 +25,10 @@ public class Review {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne
+    @JoinColumn(name = "camping_infor_id", nullable = false)
+    private CampingInfor campingInfor;
+
     private Integer rating; // 1..5
     private String comment;
 

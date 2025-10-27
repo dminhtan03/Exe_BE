@@ -10,6 +10,10 @@ import com.demoProject.demo.model.entity.*;
 import com.demoProject.demo.repository.*;
 import com.demoProject.demo.service.BookingService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -178,15 +182,30 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
-    public List<BookingByCampingIdResponse> getBookingsByCampingId(String campingId) {
-        // Gợi ý: repository nên dùng EntityGraph hoặc JOIN FETCH để load details + nested relationships
-        List<Booking> bookings = bookingRepository.findByCampingId(campingId);
-        List<BookingByCampingIdResponse> responses = new ArrayList<>();
+    @Override
+    public Page<BookingByCampingIdResponse> getBookingsByCampingId(String campingId, int page, int size) {
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1), Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Booking> bookingsPage = bookingRepository.findByCampingId(campingId, pageable);
 
-        for (Booking booking : bookings) {
+        return bookingsPage.map(booking -> {
             BookingByCampingIdResponse resp = new BookingByCampingIdResponse();
             resp.setBookingId(booking.getId());
             resp.setUserId(booking.getUser() != null ? booking.getUser().getId() : null);
+
+            // Populate only the user's name (no User object to serialize)
+            if (booking.getUser() != null && booking.getUser().getUserInfo() != null) {
+                UserInfo ui = booking.getUser().getUserInfo();
+                String first = ui.getFirstName() != null ? ui.getFirstName().trim() : "";
+                String last = ui.getLastName() != null ? ui.getLastName().trim() : "";
+                String fullName = (first + " " + last).trim();
+                if (fullName.isEmpty()) {
+                    fullName = ui.getEmail() != null ? ui.getEmail() : null;
+                }
+                resp.setUserName(fullName);
+            } else {
+                resp.setUserName(null);
+            }
+
             resp.setCampingSiteId(booking.getCampingSite() != null ? booking.getCampingSite().getId() : null);
 
             String campingInforId = null;
@@ -195,15 +214,12 @@ public class BookingServiceImpl implements BookingService {
 
             if (booking.getDetails() != null && !booking.getDetails().isEmpty()) {
                 for (BookingDetail detail : booking.getDetails()) {
-                    // room
                     if (detail.getRoom() != null) {
                         campingInforId = detail.getRoom().getId();
                     }
-                    // tent
                     if (detail.getCampingTent() != null) {
                         campingTentId = detail.getCampingTent().getId();
                     }
-                    // service (ưu tiên tên service trong ServiceEntity, nếu null thì customName)
                     if (detail.getCampingService() != null) {
                         CampingService cs = detail.getCampingService();
                         if (cs.getService() != null && cs.getService().getName() != null) {
@@ -222,13 +238,10 @@ public class BookingServiceImpl implements BookingService {
             resp.setEndTime(booking.getEndTime());
             resp.setTotalPrice(booking.getTotalPrice());
             resp.setStatus(booking.getStatus() != null ? booking.getStatus().name() : null);
-
-            responses.add(resp);
-        }
-
-        return responses;
+            resp.setCreatedAt(booking.getCreatedAt());
+            return resp;
+        });
     }
-
     // ==========================
     // Update booking
     // ==========================

@@ -12,6 +12,8 @@ import com.demoProject.demo.service.PaymentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -83,12 +85,17 @@ public class PaymentServiceImpl implements PaymentService {
 
     // ✅ Hàm tạo QR giả lập (có thể tích hợp thật sau)
     private String generateBankTransferQR(double amount, String bookingId) {
-        String bankAccount = "9704 0000 1234 5678"; // demo account
-        String bankName = "Vietcombank";
-        String content = "Thanh toan booking " + bookingId + " voi so tien " + amount + " VND";
+        String bankCode = "VCB"; // Mã ngân hàng (Vietcombank)
+        String accountNumber = "9704361234567899";
+        String content = "Thanh toan booking " + bookingId;
 
-        // Link QR demo (có thể thay bằng API thật của VietQR, Momo, VNPay)
-        return "https://img.vietqr.io/image/VCB-9704361234567899-compact.png?amount="
-                + amount + "&addInfo=" + content.replace(" ", "%20");
+        // encode nội dung thành URL-safe
+        String encodedContent = URLEncoder.encode(content, StandardCharsets.UTF_8);
+
+        return "https://img.vietqr.io/image/"
+                + bankCode + "-" + accountNumber
+                + "-compact.png?amount=" + (int) amount
+                + "&addInfo=" + encodedContent;
     }
+
 }

@@ -6,6 +6,7 @@ import com.demoProject.demo.model.dto.response.BookingByUserIdResponse;
 import com.demoProject.demo.model.dto.response.BookingResponse;
 import com.demoProject.demo.model.dto.response.BookingByCampingIdResponse;
 import com.demoProject.demo.model.entity.Booking;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface BookingService {
 
     List<BookingByUserIdResponse> getBookingsByUserId(String userId);
 
-    List<BookingByCampingIdResponse> getBookingsByCampingId(String campingId);
+    Page<BookingByCampingIdResponse> getBookingsByCampingId(String campingId, int page, int size);
 
     BookingResponse updateBooking(String bookingId, UpdateBookingRequest request);
 

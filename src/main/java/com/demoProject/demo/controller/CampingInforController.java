@@ -7,6 +7,7 @@ import com.demoProject.demo.model.dto.response.CampingInforResponse;
 import com.demoProject.demo.service.CampingInforService;
 import com.demoProject.demo.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,14 @@ public class CampingInforController {
     }
 
     //xem thông tin booking
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/booking/{campingId}")
-    public ResponseEntity<List<BookingByCampingIdResponse>> getBookingsByCampingId(@PathVariable String campingId) {
-        List<BookingByCampingIdResponse> responses = bookingService.getBookingsByCampingId(campingId);
+    public ResponseEntity<Page<BookingByCampingIdResponse>> getBookingsByCampingId(
+            @PathVariable String campingId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<BookingByCampingIdResponse> responses = bookingService.getBookingsByCampingId(campingId, page, size);
         return ResponseEntity.ok(responses);
     }
 

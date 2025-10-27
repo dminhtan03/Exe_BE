@@ -1,16 +1,17 @@
-// src/main/java/com/demoProject/demo/service/impl/ReviewServiceImpl.java
 package com.demoProject.demo.service.impl;
 
+import com.demoProject.demo.common.enums.BookingStatus;
 import com.demoProject.demo.model.dto.request.ReviewRequest;
 import com.demoProject.demo.model.entity.*;
 import com.demoProject.demo.repository.*;
 import com.demoProject.demo.service.ReviewService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,8 +25,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void createReview(ReviewRequest request) {
-        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        User user = userRepository.findByUserInfoEmail(username)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("Unauthenticated");
+        }
+
+        // Use userId from the request to load the user
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Booking booking = bookingRepository.findById(request.getBookingId())
@@ -35,12 +41,13 @@ public class ReviewServiceImpl implements ReviewService {
             throw new IllegalArgumentException("Access denied");
         }
 
-        if (!booking.getStatus().name().equals("COMPLETED")) {
+        // Only allow review when booking status is COMPLETED
+        if (booking.getStatus() != BookingStatus.COMPLETED) {
             throw new IllegalArgumentException("Booking not completed");
         }
 
-        // Check if already reviewed
-        if (reviewRepository.findAll().stream().anyMatch(r -> r.getBooking().getId().equals(booking.getId()))) {
+        // Check if already reviewed for this booking
+        if (reviewRepository.existsByBooking_Id(booking.getId())) {
             throw new IllegalArgumentException("Already reviewed");
         }
 
@@ -51,16 +58,15 @@ public class ReviewServiceImpl implements ReviewService {
         review.setId(UUID.randomUUID().toString());
         review.setUser(user);
         review.setBooking(booking);
+        review.setCampingInfor(campingInfor);
         review.setRating(request.getRating());
         review.setComment(request.getComment());
         review.setCreatedAt(LocalDateTime.now());
 
         reviewRepository.save(review);
 
-        // Update average rating
-        var reviews = reviewRepository.findAll().stream()
-                .filter(r -> r.getBooking().getCampingSite().getId().equals(campingInfor.getCampingSite().getId()))
-                .toList();
+        // Update average rating for the campingInfor
+        List<Review> reviews = reviewRepository.findByCampingInfor_Id(campingInfor.getId());
         double avg = reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
         campingInfor.setRate(avg);
         campingInforRepository.save(campingInfor);

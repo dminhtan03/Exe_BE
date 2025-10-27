@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/api/v1/reviews")
 @AllArgsConstructor
 public class ReviewController {
 
