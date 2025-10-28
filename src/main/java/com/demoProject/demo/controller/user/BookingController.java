@@ -8,6 +8,7 @@ import com.demoProject.demo.model.dto.response.BookingResponse;
 import com.demoProject.demo.model.entity.Booking;
 import com.demoProject.demo.service.BookingService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,11 @@ public class BookingController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BookingByUserIdResponse>> getBookingsByUserId(@PathVariable String userId) {
-        List<BookingByUserIdResponse> responses = bookingService.getBookingsByUserId(userId);
+    public ResponseEntity<Page<BookingByUserIdResponse>> getBookingsByUserId(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<BookingByUserIdResponse> responses = bookingService.getBookingsByUserId(userId, page, size);
         return ResponseEntity.ok(responses);
     }
 

@@ -130,12 +130,11 @@ public class BookingServiceImpl implements BookingService {
     // Get bookings by user id
     // ==========================
     @Override
-    public List<BookingByUserIdResponse> getBookingsByUserId(String userId) {
-        // Gợi ý: repository nên dùng EntityGraph hoặc JOIN FETCH để load details + nested relationships
-        List<Booking> bookings = bookingRepository.findByUserId(userId);
-        List<BookingByUserIdResponse> responses = new ArrayList<>();
+    public Page<BookingByUserIdResponse> getBookingsByUserId(String userId, int page, int size) {
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1), Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Booking> bookingsPage = bookingRepository.findByUserId(userId, pageable);
 
-        for (Booking booking : bookings) {
+        return bookingsPage.map(booking -> {
             BookingByUserIdResponse resp = new BookingByUserIdResponse();
             resp.setBookingId(booking.getId());
             resp.setUserId(booking.getUser() != null ? booking.getUser().getId() : null);
@@ -147,15 +146,12 @@ public class BookingServiceImpl implements BookingService {
 
             if (booking.getDetails() != null && !booking.getDetails().isEmpty()) {
                 for (BookingDetail detail : booking.getDetails()) {
-                    // room
                     if (detail.getRoom() != null) {
                         campingInforId = detail.getRoom().getId();
                     }
-                    // tent
                     if (detail.getCampingTent() != null) {
                         campingTentId = detail.getCampingTent().getId();
                     }
-                    // service (ưu tiên tên service trong ServiceEntity, nếu null thì customName)
                     if (detail.getCampingService() != null) {
                         CampingService cs = detail.getCampingService();
                         if (cs.getService() != null && cs.getService().getName() != null) {
@@ -175,12 +171,9 @@ public class BookingServiceImpl implements BookingService {
             resp.setTotalPrice(booking.getTotalPrice());
             resp.setStatus(booking.getStatus() != null ? booking.getStatus().name() : null);
 
-            responses.add(resp);
-        }
-
-        return responses;
+            return resp;
+        });
     }
-
 
     @Override
     public Page<BookingByCampingIdResponse> getBookingsByCampingId(String campingId, int page, int size) {
