@@ -61,5 +61,17 @@ public class BookingController {
             return ResponseEntity.internalServerError().body("Failed to cancel booking");
         }
     }
+    @PutMapping("/{bookingId}/completed")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> completedBooking(@PathVariable String bookingId) {
+        try {
+            bookingService.completedBooking(bookingId);
+            return ResponseEntity.ok("Booking completed successfully");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().body("Failed to complete booking");
+        }
+    }
 
 }

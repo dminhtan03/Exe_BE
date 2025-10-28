@@ -20,4 +20,5 @@ public interface BookingService {
     BookingResponse updateBooking(String bookingId, UpdateBookingRequest request);
 
     void cancelBooking(String bookingId);
+    void completedBooking(String bookingId);
 }

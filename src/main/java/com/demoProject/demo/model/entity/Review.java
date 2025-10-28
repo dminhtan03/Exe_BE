@@ -25,7 +25,7 @@ public class Review {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "camping_infor_id", nullable = false)
     private CampingInfor campingInfor;
 
