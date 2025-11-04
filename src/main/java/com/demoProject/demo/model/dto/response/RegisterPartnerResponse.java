@@ -16,7 +16,7 @@ public class RegisterPartnerResponse {
 
     private String address_partner;
 
-    private String address_camping;
+    private String campingSiteId;
 
     private String name_camping;
 

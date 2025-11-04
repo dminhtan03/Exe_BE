@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ResponseCode {
 
+    CAMPING_SITE_NOT_FOUND("ERR_404", "Camping site not found", HttpStatus.NOT_FOUND),
     // ======= System Errors =======
     SYSTEM("ERR_501", "System error. Please try again later!", HttpStatus.INTERNAL_SERVER_ERROR),
     INTERNAL_SERVER_ERROR("ERR_500", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),

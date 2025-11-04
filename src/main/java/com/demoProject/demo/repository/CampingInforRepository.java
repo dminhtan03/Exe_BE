@@ -24,4 +24,11 @@ public interface CampingInforRepository extends JpaRepository<CampingInfor, Stri
           )
     """)
     List<CampingInfor> findAvailableCampingInfors(String destination,LocalDateTime startTime,LocalDateTime endTime);
+
+    // Derived query remains (keeps compatibility)
+    List<CampingInfor> findByNameContainingIgnoreCase(String name);
+
+    // New: fetch-join campingSite to avoid lazy loading errors when mapping campingSite fields
+    @Query("SELECT c FROM CampingInfor c LEFT JOIN FETCH c.campingSite s WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<CampingInfor> findByNameContainingIgnoreCaseFetchSite(String name);
 }

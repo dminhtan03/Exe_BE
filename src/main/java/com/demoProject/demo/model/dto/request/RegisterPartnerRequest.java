@@ -22,8 +22,7 @@ public class RegisterPartnerRequest {
     @NotBlank(message = "Address partner is mandatory")
     private String address_partner;
 
-    @NotBlank(message = "Address camping is mandatory")
-    private String address_camping;
+    private String campingSiteId;
 
     @NotBlank(message = "Email is mandatory")
     @Email

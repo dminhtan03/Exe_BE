@@ -3,13 +3,13 @@ package com.demoProject.demo.controller.user;
 import com.demoProject.demo.model.dto.response.CampingInforResponse;
 import com.demoProject.demo.model.dto.response.CampingRoomListResponse;
 import com.demoProject.demo.model.dto.response.CampingSiteSimpleResponse;
-import com.demoProject.demo.model.entity.CampingSite;
 import com.demoProject.demo.service.CampingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,4 +35,9 @@ public class CampingSiteController {
         return ResponseEntity.ok(campingservice.getCampingRoomsBySiteId(campingSiteId));
     }
 
+    @GetMapping("/search-infors")
+    public ResponseEntity<List<CampingInforResponse>> searchInforsByName(
+            @RequestParam(name = "name", required = false) String name) {
+        return ResponseEntity.ok(campingservice.searchCampingInforsByName(name));
+    }
 }

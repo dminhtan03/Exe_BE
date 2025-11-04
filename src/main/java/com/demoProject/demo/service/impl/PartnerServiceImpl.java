@@ -1,4 +1,3 @@
-// src/main/java/com/demoProject/demo/service/impl/PartnerServiceImpl.java
 package com.demoProject.demo.service.impl;
 
 import com.demoProject.demo.common.exception.CustomException;
@@ -32,11 +31,12 @@ public class PartnerServiceImpl implements PartnerService {
     @Transactional
     public RegisterPartnerResponse registerPartner(RegisterPartnerRequest request) {
 
+        // ✅ 1. Kiểm tra email trùng
         if (userInfoRepository.existsByEmail(request.getEmail())) {
             throw new CustomException(ResponseCode.EMAIL_ALREADY_EXISTS);
         }
 
-        // Create UserInfo
+        // ✅ 2. Tạo UserInfo
         UserInfo userInfo = new UserInfo();
         userInfo.setId(UUID.randomUUID().toString());
         userInfo.setFirstName(request.getFirstName());
@@ -47,7 +47,7 @@ public class PartnerServiceImpl implements PartnerService {
         userInfo.setCreatedAt(LocalDateTime.now());
         userInfoRepository.save(userInfo);
 
-        // Create User
+        // ✅ 3. Tạo User (Partner)
         User user = new User();
         user.setId(UUID.randomUUID().toString());
         user.setUserInfo(userInfo);
@@ -60,24 +60,34 @@ public class PartnerServiceImpl implements PartnerService {
         ));
         userRepository.save(user);
 
-        // Create CampingSite
-        CampingSite campingSite = new CampingSite();
-        campingSite.setId(UUID.randomUUID().toString());
-        campingSite.setPartner(user);
-        campingSite.setName(request.getName_camping());
-        campingSite.setDescription(request.getDescription_camping());
-        campingSite.setLocation(request.getAddress_camping());
-        campingSite.setCreatedAt(LocalDateTime.now());
-        campingSite.setIsActive(true);
-        campingSiteRepository.save(campingSite);
+        // ✅ 4. Xử lý CampingSite
+        CampingSite campingSite;
 
-        // Create CampingInfor (at least one, minimal info)
+        if (request.getCampingSiteId() != null && !request.getCampingSiteId().isEmpty()) {
+            // 🏕 Dùng lại camping site có sẵn
+            campingSite = campingSiteRepository.findById(request.getCampingSiteId())
+                    .orElseThrow(() -> new CustomException(ResponseCode.CAMPING_SITE_NOT_FOUND));
+        } else {
+            // 🏕 Tạo mới camping site
+            campingSite = new CampingSite();
+            campingSite.setId(UUID.randomUUID().toString());
+            campingSite.setPartner(user);
+            campingSite.setName(request.getName_camping());
+            campingSite.setDescription(request.getDescription_camping());
+            // Không có address_camping, ta có thể dùng address_partner làm location
+            campingSite.setLocation(request.getAddress_partner());
+            campingSite.setCreatedAt(LocalDateTime.now());
+            campingSite.setIsActive(true);
+            campingSiteRepository.save(campingSite);
+        }
+
+        // ✅ 5. Tạo CampingInfor
         CampingInfor campingInfor = CampingInfor.builder()
                 .id(UUID.randomUUID().toString())
                 .owner(user)
                 .campingSite(campingSite)
                 .name(request.getName_camping())
-                .address(request.getAddress_camping())
+                .address(campingSite.getLocation())
                 .description(request.getDescription_camping())
                 .basePrice(0.0)
                 .bookedCount(0)
@@ -87,9 +97,9 @@ public class PartnerServiceImpl implements PartnerService {
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .build();
-        campingInforRepository.save(campingInfor); // <-- Save before using
+        campingInforRepository.save(campingInfor);
 
-        // Save images to CampingGallery (link to CampingInfor)
+        // ✅ 6. Lưu hình ảnh
         List<CampingGallery> galleries = request.getImageUrls().stream()
                 .map(url -> CampingGallery.builder()
                         .id(UUID.randomUUID().toString())
@@ -99,17 +109,18 @@ public class PartnerServiceImpl implements PartnerService {
                 .collect(Collectors.toList());
         campingGalleryRepository.saveAll(galleries);
 
-        // Build response
+        // ✅ 7. Build response
         RegisterPartnerResponse response = new RegisterPartnerResponse();
         response.setFirstName(request.getFirstName());
         response.setLastName(request.getLastName());
         response.setPhoneNumber(request.getPhoneNumber());
         response.setAddress_partner(request.getAddress_partner());
-        response.setAddress_camping(request.getAddress_camping());
+        response.setCampingSiteId(campingSite.getId());
         response.setName_camping(request.getName_camping());
         response.setDescription_camping(request.getDescription_camping());
         response.setEmail(request.getEmail());
         response.setImageUrls(request.getImageUrls());
+
         return response;
     }
 }

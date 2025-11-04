@@ -115,4 +115,33 @@ public class CampingServiceImpl implements CampingService {
                 })
                 .collect(Collectors.toList());
     }
+
+    // New: search camping infors (rooms) by name
+    @Override
+    public List<CampingInforResponse> searchCampingInforsByName(String name) {
+        String keyword = name == null ? "" : name.trim();
+        List<CampingInfor> results = campingInforRepository.findByNameContainingIgnoreCaseFetchSite(keyword);
+
+        return results.stream().map(room -> CampingInforResponse.builder()
+                        .id(room.getId())
+                        .userId(room.getOwner() != null ? room.getOwner().getId() : null)
+                        .campingSiteId(room.getCampingSite() != null ? room.getCampingSite().getId() : null)
+                        .campingSiteName(room.getCampingSite() != null ? room.getCampingSite().getName() : null)
+                        .name(room.getName())
+                        .address(room.getAddress())
+                        .description(room.getDescription())
+                        .basePrice(room.getBasePrice())
+                        .thumbnail(room.getThumbnail())
+                        .bookedCount(room.getBookedCount())
+                        .revenue(room.getRevenue())
+                        .active(room.getActive())
+                        .rate(room.getRate())
+                        .services(null)   // map if needed
+                        .tents(null)      // map if needed
+                        .galleries(null)  // map if needed
+                        .createdAt(room.getCreatedAt())
+                        .updatedAt(room.getUpdatedAt())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
