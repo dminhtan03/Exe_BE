@@ -4,6 +4,7 @@ import com.demoProject.demo.model.entity.CampingInfor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import com.demoProject.demo.model.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,4 +25,6 @@ public interface CampingInforRepository extends JpaRepository<CampingInfor, Stri
           )
     """)
     List<CampingInfor> findAvailableCampingInfors(String destination,LocalDateTime startTime,LocalDateTime endTime);
+
+    List<CampingInfor> findByOwner(User owner);
 }

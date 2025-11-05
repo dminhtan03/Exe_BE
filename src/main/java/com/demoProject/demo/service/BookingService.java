@@ -21,4 +21,6 @@ public interface BookingService {
 
     void cancelBooking(String bookingId);
     void completedBooking(String bookingId);
+
+    Page<BookingByUserIdResponse> getBookings(int page, int size);
 }

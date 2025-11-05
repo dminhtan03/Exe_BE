@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
 
 
 import java.util.List;
@@ -76,5 +78,83 @@ public class PostServiceImpl implements PostService {
             dto.setComments(commentDTOs);
             return dto;
         });
+    }
+     @Override
+    public List<PostResponse> getPostsByUser(User user) {
+        List<Post> posts = postRepository.findByUser(user);
+        return posts.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // =================== UPDATE ===================
+    @Override
+    public PostResponse updatePost(Long postId, User user, String content, String imageUrl) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to edit this post");
+        }
+
+        if (content != null && !content.trim().isEmpty()) {
+            post.setContent(content.trim());
+        }
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            // Ở đây bạn có thể tích hợp upload file hoặc lưu base64.
+            // Tạm thời demo bằng tên file (cần thay bằng upload thực tế)
+            
+            post.setImageUrl(imageUrl);
+        }
+
+        Post updatedPost = postRepository.save(post);
+        return mapToResponse(updatedPost);
+    }
+
+    // =================== DELETE ===================
+    @Override
+    public void deletePost(Long postId, User user) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to delete this post");
+        }
+
+        // Xóa comment liên quan
+        if (post.getComments() != null && !post.getComments().isEmpty()) {
+            commentRepository.deleteAll(post.getComments());
+        }
+
+        postRepository.delete(post);
+    }
+
+    // =================== HELPER METHOD ===================
+    private PostResponse mapToResponse(Post post) {
+        PostResponse dto = new PostResponse();
+        dto.setId(post.getId());
+        dto.setContent(post.getContent());
+        dto.setImageUrl(post.getImageUrl());
+        dto.setCreatedAt(post.getCreatedAt());
+
+        dto.setUserName(post.getUser().getUserInfo().getFullName());
+        dto.setUserAvatar(post.getUser().getUserInfo().getAvatarUrl());
+
+        dto.setTotalLikes(likeService.countLikes(post.getId()));
+        dto.setTotalComments(post.getComments().size());
+
+        List<CommentResponse> commentDTOs = post.getComments().stream().map(c -> {
+            CommentResponse cdto = new CommentResponse();
+            cdto.setId(c.getId());
+            cdto.setContent(c.getContent());
+            cdto.setCreatedAt(c.getCreatedAt());
+            cdto.setUserName(c.getUser().getUserInfo().getFullName());
+            cdto.setUserAvatar(c.getUser().getUserInfo().getAvatarUrl());
+            return cdto;
+        }).collect(Collectors.toList());
+
+        dto.setComments(commentDTOs);
+        return dto;
     }
 }

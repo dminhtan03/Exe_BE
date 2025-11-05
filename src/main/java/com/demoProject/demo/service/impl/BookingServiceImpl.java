@@ -373,5 +373,69 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.save(booking);
     }
 
+    // ==========================
+    // Get all bookings (for admin)
+    // ==========================
+    @Override
+    public Page<BookingByUserIdResponse> getBookings(int page, int size) {
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        // Lấy tất cả bookings (mọi người dùng)
+        Page<Booking> bookingsPage = bookingRepository.findAll(pageable);
+
+        // Ánh xạ trực tiếp trong map
+        return bookingsPage.map(booking -> {
+            BookingByUserIdResponse resp = new BookingByUserIdResponse();
+
+            // --- Thông tin cơ bản ---
+            resp.setBookingId(booking.getId());
+            resp.setUserId(booking.getUser() != null ? booking.getUser().getId() : null);
+            resp.setCampingSiteId(booking.getCampingSite() != null ? booking.getCampingSite().getId() : null);
+            resp.setStartTime(booking.getStartTime());
+            resp.setEndTime(booking.getEndTime());
+            resp.setTotalPrice(booking.getTotalPrice());
+            resp.setStatus(booking.getStatus() != null ? booking.getStatus().name() : null);
+
+            // --- Chi tiết booking ---
+            String campingInforId = null;
+            String campingTentId = null;
+            List<String> serviceNames = new ArrayList<>();
+
+            if (booking.getDetails() != null && !booking.getDetails().isEmpty()) {
+                for (BookingDetail detail : booking.getDetails()) {
+
+                    if (detail.getRoom() != null) {
+                        campingInforId = detail.getRoom().getId();
+                    }
+
+                    if (detail.getCampingTent() != null) {
+                        campingTentId = detail.getCampingTent().getId();
+                    }
+
+                    if (detail.getCampingService() != null) {
+                        CampingService cs = detail.getCampingService();
+
+                        // Ưu tiên lấy tên service chuẩn, nếu không có thì lấy tên custom
+                        if (cs.getService() != null && cs.getService().getName() != null) {
+                            serviceNames.add(cs.getService().getName());
+                        } else if (cs.getCustomName() != null) {
+                            serviceNames.add(cs.getCustomName());
+                        }
+                    }
+                }
+            }
+
+            resp.setCampingInforId(campingInforId);
+            resp.setCampingTentId(campingTentId);
+            resp.setServiceNames(serviceNames);
+
+            return resp;
+        });
+    }
+
 }
 
