@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import com.demoProject.demo.model.entity.User;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.List;
 
@@ -46,6 +49,31 @@ public class CommunityController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return postService.getAllPosts(pageable);
+    }
+
+    @GetMapping("/posts/user/{userId}")
+    public List<PostResponse> getPostsByUser(@PathVariable String userId) {
+        User user = new User();
+        user.setId(userId);
+        return postService.getPostsByUser(user);
+    }
+
+    @PutMapping("/posts/{postId}")
+public PostResponse updatePost(
+        @PathVariable Long postId,
+        @RequestBody CreatePostRequest request
+) {
+    User user = new User();
+    user.setId(request.getUserId());
+    return postService.updatePost(postId, user, request.getContent(), request.getImageBase64());
+}
+
+    @DeleteMapping("/posts/{postId}")
+    public String deletePost(@PathVariable Long postId, @RequestParam String userId) {
+        User user = new User();
+        user.setId(userId);
+        postService.deletePost(postId, user);
+        return "Post deleted successfully";
     }
 
 

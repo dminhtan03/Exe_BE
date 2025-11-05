@@ -1,5 +1,6 @@
 package com.demoProject.demo.controller.admin;
 
+import com.demoProject.demo.model.dto.response.BookingByUserIdResponse;
 import com.demoProject.demo.model.dto.response.InvoiceDTO;
 import com.demoProject.demo.service.InvoiceAdminService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import com.demoProject.demo.service.BookingService;
+
 
 import java.time.LocalDateTime;
 
@@ -17,26 +21,26 @@ import java.time.LocalDateTime;
 public class InvoiceAdminController {
 
     private final InvoiceAdminService invoiceAdminService;
+    private final BookingService bookingService;
 
-    // ================= Lấy tất cả hóa đơn (phân trang) =================
+
     @GetMapping
-    public ResponseEntity<?> getAllInvoices(
+    public ResponseEntity<Page<BookingByUserIdResponse>> getAllBookings(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(invoiceAdminService.getAllInvoices(pageable));
+            @RequestParam(defaultValue = "10") int size) {
+        Page<BookingByUserIdResponse> bookings = bookingService.getBookings(page, size);
+        return ResponseEntity.ok(bookings);
     }
 
-    // ================= Tìm kiếm hóa đơn (bookingId, start, end, phân trang) =================
+    // ================= Tìm kiếm hóa đơn (bookingId, start, end, phân trang)
+    // =================
     @GetMapping("/search")
     public ResponseEntity<?> searchInvoices(
             @RequestParam(required = false) String bookingId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(invoiceAdminService.searchInvoices(bookingId, start, end, pageable));
     }
@@ -51,8 +55,7 @@ public class InvoiceAdminController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<InvoiceDTO> updateInvoiceStatus(
             @PathVariable String id,
-            @RequestParam String status
-    ) {
+            @RequestParam String status) {
         return ResponseEntity.ok(invoiceAdminService.updateInvoiceStatus(id, status));
     }
 }
