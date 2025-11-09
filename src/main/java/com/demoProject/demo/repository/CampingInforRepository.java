@@ -27,4 +27,7 @@ public interface CampingInforRepository extends JpaRepository<CampingInfor, Stri
     List<CampingInfor> findAvailableCampingInfors(String destination,LocalDateTime startTime,LocalDateTime endTime);
 
     List<CampingInfor> findByOwner(User owner);
+
+    @Query("SELECT c FROM CampingInfor c LEFT JOIN FETCH c.campingSite s WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<CampingInfor> findByNameContainingIgnoreCaseFetchSite(String name);
 }
