@@ -1,6 +1,5 @@
 package com.demoProject.demo.controller.admin;
 
-import com.demoProject.demo.model.dto.response.BookingByUserIdResponse;
 import com.demoProject.demo.model.dto.response.InvoiceDTO;
 import com.demoProject.demo.service.InvoiceAdminService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
-import com.demoProject.demo.service.BookingService;
 
 
 import java.time.LocalDateTime;
@@ -21,21 +19,20 @@ import java.time.LocalDateTime;
 public class InvoiceAdminController {
 
     private final InvoiceAdminService invoiceAdminService;
-    private final BookingService bookingService;
 
 
     @GetMapping
-    public ResponseEntity<Page<BookingByUserIdResponse>> getAllBookings(
+    public ResponseEntity<Page<InvoiceDTO>> getAllInvoices(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<BookingByUserIdResponse> bookings = bookingService.getBookings(page, size);
-        return ResponseEntity.ok(bookings);
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(invoiceAdminService.getAllInvoices(pageable));
     }
 
     // ================= Tìm kiếm hóa đơn (bookingId, start, end, phân trang)
     // =================
     @GetMapping("/search")
-    public ResponseEntity<?> searchInvoices(
+    public ResponseEntity<Page<InvoiceDTO>> searchInvoices(
             @RequestParam(required = false) String bookingId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
@@ -57,5 +54,11 @@ public class InvoiceAdminController {
             @PathVariable String id,
             @RequestParam String status) {
         return ResponseEntity.ok(invoiceAdminService.updateInvoiceStatus(id, status));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteInvoice(@PathVariable String id) {
+        invoiceAdminService.deleteInvoice(id);
+        return ResponseEntity.noContent().build();
     }
 }
