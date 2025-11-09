@@ -5,6 +5,8 @@ import com.demoProject.demo.model.dto.response.AdminUserResponse;
 import com.demoProject.demo.model.entity.User;
 import com.demoProject.demo.repository.AdminUserRepository;
 import com.demoProject.demo.service.AdminUserService;
+import com.demoProject.demo.service.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class AdminUserServiceImpl implements AdminUserService {
 
     private final AdminUserRepository userRepository;
+    private final EmailService emailService;
 
     /**
      * Retrieves a paginated list of users. If a keyword is provided, it searches
@@ -104,7 +107,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
-     * Bans or unbans a user by updating their locked status.
+     * Bans or unbans a user by updating their locked status and sends email notification.
      *
      * @param id  the user ID
      * @param ban true to ban (lock), false to unban (unlock)
@@ -112,11 +115,39 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public boolean banUser(String id, boolean ban) {
-        return userRepository.findById(id).map(user -> {
-            user.setLocked(ban);
-            userRepository.save(user);
-            return true;
-        }).orElse(false);
+        try {
+            return userRepository.findById(id).map(user -> {
+                user.setLocked(ban);
+                userRepository.save(user);
+
+                // Gửi email thông báo
+                String fullName = user.getUserInfo() != null ? user.getUserInfo().getFullName() : "Đối tác";
+                String email = user.getUserInfo() != null ? user.getUserInfo().getEmail() : "";
+                String subject = ban ? "Tài khoản của bạn đã bị khóa" : "Tài khoản của bạn đã được mở khóa";
+                String content = String.format("""
+                        <h3>Xin chào %s,</h3>
+                        <p>Tài khoản của bạn đã bị <b>%s</b>.</p>
+                        <p>%s</p>
+                        <p>Nếu bạn cần thêm thông tin hoặc hỗ trợ, vui lòng liên hệ với đội ngũ Campverse.</p>
+                        <p>Trân trọng,<br/>Đội ngũ Campverse</p>
+                        """, 
+                        fullName, 
+                        ban ? "khóa" : "mở khóa",
+                        ban ? "Bạn sẽ không thể đăng nhập cho đến khi tài khoản được mở khóa." 
+                           : "Bạn đã có thể đăng nhập lại vào hệ thống.");
+
+                try {
+                    emailService.sendHtmlEmail(email, subject, content);
+                } catch (MessagingException e) {
+                    // Log error but don't throw to prevent transaction rollback
+                    System.err.println("Failed to send email notification: " + e.getMessage());
+                }
+                return true;
+            }).orElse(false);
+        } catch (Exception e) {
+            System.err.println("Error in banUser: " + e.getMessage());
+            return false;
+        }
     }
 
     /**

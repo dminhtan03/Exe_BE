@@ -93,29 +93,64 @@ public class InvoiceAdminServiceImpl implements InvoiceAdminService {
                 site.getIsActive()
         );
 
+        String customerName = null;
+        String customerEmail = null;
+        String customerPhone = null;
+
+        if (booking.getUser() != null && booking.getUser().getUserInfo() != null) {
+            var userInfo = booking.getUser().getUserInfo();
+            customerName = userInfo.getFullName();
+            customerEmail = userInfo.getEmail();
+            customerPhone = userInfo.getPhoneNumber();
+        }
+
         return new InvoiceDTO(
                 booking.getId(),
-                booking.getStatus().name(),
+                booking.getStatus() != null ? booking.getStatus().name() : null,
                 booking.getTotalPrice(),
                 booking.getCreatedAt(),
                 booking.getStartTime(),
                 booking.getEndTime(),
-                booking.getUser().getUserInfo().getFullName(),
-                booking.getUser().getUserInfo().getEmail(),
-                booking.getUser().getUserInfo().getPhoneNumber(),
+                customerName,
+                customerEmail,
+                customerPhone,
                 siteDTO,
-                booking.getDetails().stream()
+                booking.getDetails() != null
+                        ? booking.getDetails().stream()
                         .map(this::mapDetailToDTO)
                         .toList()
+                        : java.util.Collections.emptyList()
         );
     }
 
     private InvoiceDetailDTO mapDetailToDTO(BookingDetail detail) {
+        String itemId = null;
+        String itemName = null;
+
+        if (detail.getRoom() != null) {
+            itemId = detail.getRoom().getId();
+            itemName = detail.getRoom().getName();
+        } else if (detail.getCampingTent() != null) {
+            itemId = detail.getCampingTent().getId();
+            itemName = detail.getCampingTent().getTentName();
+        } else if (detail.getCampingService() != null) {
+            itemId = detail.getCampingService().getId();
+            if (detail.getCampingService().getService() != null
+                    && detail.getCampingService().getService().getName() != null) {
+                itemName = detail.getCampingService().getService().getName();
+            } else {
+                itemName = detail.getCampingService().getCustomName();
+            }
+        }
+
+        String checkIn = detail.getCheckInDate() != null ? detail.getCheckInDate().toString() : null;
+        String checkOut = detail.getCheckOutDate() != null ? detail.getCheckOutDate().toString() : null;
+
         return new InvoiceDetailDTO(
-                detail.getRoom().getId(),
-                detail.getRoom().getName(),
-                detail.getCheckInDate().toString(),
-                detail.getCheckOutDate().toString(),
+                itemId,
+                itemName,
+                checkIn,
+                checkOut,
                 detail.getPrice()
         );
     }
