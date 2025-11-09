@@ -47,12 +47,12 @@ Double sumRevenueInRange(
     BigDecimal findTotalIncomeForYear(@Param("year") int year);
 
 
-    @Query("SELECT b.campingSite.name, COUNT(b) AS totalBookings " +
+    @Query("SELECT b.campingSite.location, COUNT(b) AS totalBookings " +
        "FROM Booking b " +
        "WHERE YEAR(b.createdAt) = :year " +
-       "GROUP BY b.campingSite.name " +
+       "GROUP BY b.campingSite.location " +
        "ORDER BY totalBookings DESC")
-List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.domain.Pageable pageable);
+    List<Object[]> findTopCampingSitesByBookings(int year, org.springframework.data.domain.Pageable pageable);
 
 
    @Query("SELECT b.user, COUNT(b) as bookingCount " +

@@ -241,7 +241,7 @@ public class CampingInforServiceImpl implements CampingInforService {
                 .id(camping.getId())
                 .userId(camping.getOwner() != null ? camping.getOwner().getId() : null)
                 .campingSiteId(camping.getCampingSite() != null ? camping.getCampingSite().getId() : null)
-                .campingSiteName(camping.getCampingSite() != null ? camping.getCampingSite().getName() : null)
+                .campingSiteName(camping.getCampingSite() != null ? camping.getCampingSite().getLocation() : null)
                 .name(camping.getName())
                 .address(camping.getAddress())
                 .description(camping.getDescription())

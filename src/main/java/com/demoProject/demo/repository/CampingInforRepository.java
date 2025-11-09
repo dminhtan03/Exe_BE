@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CampingInforRepository extends JpaRepository<CampingInfor, String> {
+    List<CampingInfor> findByOwner_Id(String ownerId);
 
     @Query("""
         SELECT c FROM CampingInfor c

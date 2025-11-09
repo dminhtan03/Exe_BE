@@ -75,7 +75,7 @@ public class CampingServiceImpl implements CampingService {
                 dto.setPricePerNight(null);
             }
 
-            dto.setSiteName(room.getCampingSite().getName());
+            dto.setSiteName(room.getCampingSite().getLocation());
             dto.setLocation(room.getCampingSite().getLocation());
 
             // Map image URLs from galleries
@@ -96,7 +96,7 @@ public class CampingServiceImpl implements CampingService {
                             .id(room.getId())
                             .userId(room.getOwner() != null ? room.getOwner().getId() : null)
                             .campingSiteId(room.getCampingSite() != null ? room.getCampingSite().getId() : null)
-                            .campingSiteName(room.getCampingSite() != null ? room.getCampingSite().getName() : null)
+                            .campingSiteName(room.getCampingSite() != null ? room.getCampingSite().getLocation() : null)
                             .name(room.getName())
                             .address(room.getAddress())
                             .description(room.getDescription())
@@ -126,7 +126,7 @@ public class CampingServiceImpl implements CampingService {
                         .id(room.getId())
                         .userId(room.getOwner() != null ? room.getOwner().getId() : null)
                         .campingSiteId(room.getCampingSite() != null ? room.getCampingSite().getId() : null)
-                        .campingSiteName(room.getCampingSite() != null ? room.getCampingSite().getName() : null)
+                        .campingSiteName(room.getCampingSite() != null ? room.getCampingSite().getLocation() : null)
                         .name(room.getName())
                         .address(room.getAddress())
                         .description(room.getDescription())

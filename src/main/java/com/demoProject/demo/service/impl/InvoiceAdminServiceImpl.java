@@ -85,11 +85,7 @@ public class InvoiceAdminServiceImpl implements InvoiceAdminService {
         CampingSite site = booking.getCampingSite();
         CampingSiteDTO siteDTO = new CampingSiteDTO(
                 site.getId(),
-                site.getName(),
-                site.getDescription(),
                 site.getLocation(),
-                site.getLatitude(),
-                site.getLongitude(),
                 site.getIsActive()
         );
 

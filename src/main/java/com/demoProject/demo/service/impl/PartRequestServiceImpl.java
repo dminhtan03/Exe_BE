@@ -3,10 +3,12 @@ package com.demoProject.demo.service.impl;
 import com.demoProject.demo.model.dto.response.CampingSiteResponse;
 import com.demoProject.demo.model.dto.response.PartnerResponse;
 import com.demoProject.demo.model.entity.CampingGallery;
+import com.demoProject.demo.model.entity.CampingInfor;
 import com.demoProject.demo.model.entity.CampingSite;
 import com.demoProject.demo.model.entity.User;
 import com.demoProject.demo.repository.AdminUserRepository;
 import com.demoProject.demo.repository.CampingGalleryRepository;
+import com.demoProject.demo.repository.CampingInforRepository;
 import com.demoProject.demo.repository.CampingSiteRepository;
 import com.demoProject.demo.service.EmailService;
 import com.demoProject.demo.service.PartRequestService;
@@ -25,6 +27,7 @@ public class PartRequestServiceImpl implements PartRequestService {
 
     private final AdminUserRepository userRepository;
     private final CampingSiteRepository campingSiteRepository;
+    private final CampingInforRepository campingInforRepository;
     private final CampingGalleryRepository campingGalleryRepository;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
@@ -139,17 +142,13 @@ public class PartRequestServiceImpl implements PartRequestService {
             dto.setAvatarUrl(partner.getUserInfo().getAvatarUrl());
         }
 
-        List<CampingSite> sites = campingSiteRepository.findByPartner_Id(partner.getId());
-        if (!sites.isEmpty()) {
+        List<CampingInfor> campingInfors = campingInforRepository.findByOwner_Id(partner.getId());
+        if (!campingInfors.isEmpty()) {
             dto.setCampingSites(
-                    sites.stream().map(site -> {
+                    campingInfors.stream().map(site -> {
                         CampingSiteResponse siteDto = new CampingSiteResponse();
                         siteDto.setId(site.getId());
-                        siteDto.setName(site.getName());
-                        siteDto.setDescription(site.getDescription());
-                        siteDto.setLocation(site.getLocation());
-                        siteDto.setLatitude(site.getLatitude());
-                        siteDto.setLongitude(site.getLongitude());
+                        siteDto.setLocation(site.getName());
 
                         List<String> images = campingGalleryRepository
                                 .findByCamping_CampingSite_Id(site.getId())

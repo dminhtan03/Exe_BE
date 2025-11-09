@@ -71,12 +71,8 @@ public class PartnerServiceImpl implements PartnerService {
             // 🏕 Tạo mới camping site
             campingSite = new CampingSite();
             campingSite.setId(UUID.randomUUID().toString());
-            campingSite.setPartner(user);
-            campingSite.setName(request.getName_camping());
-            campingSite.setDescription(request.getDescription_camping());
             // Không có address_camping, ta có thể dùng address_partner làm location
             campingSite.setLocation(request.getAddress_partner());
-            campingSite.setCreatedAt(LocalDateTime.now());
             campingSite.setIsActive(true);
             campingSiteRepository.save(campingSite);
         }

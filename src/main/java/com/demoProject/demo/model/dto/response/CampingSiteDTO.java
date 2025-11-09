@@ -9,10 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CampingSiteDTO {
     private String id;
-    private String name;
-    private String description;
     private String location;
-    private Double latitude;
-    private Double longitude;
     private Boolean isActive;
 }
