@@ -9,7 +9,7 @@ import com.demoProject.demo.model.dto.response.TopUserReponse;
 import com.demoProject.demo.model.dto.response.DashBoardResponse;
 import com.demoProject.demo.model.dto.response.MonthlyRevenueResponse;
 import com.demoProject.demo.repository.BookingRepository;
-import com.demoProject.demo.repository.CampingSiteRepository;
+import com.demoProject.demo.repository.CampingInforRepository;
 import com.demoProject.demo.repository.ReviewRepository;
 import com.demoProject.demo.service.DashboardService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 public class DashboardServiceImpl implements DashboardService {
 
         private final BookingRepository bookingRepository;
-        private final CampingSiteRepository campingSiteRepository;
+        private final CampingInforRepository campingInforRepository;
         private final ReviewRepository reviewRepository;
 
         @Override
@@ -49,7 +49,7 @@ public class DashboardServiceImpl implements DashboardService {
                 Long totalBookingsThisMonth = bookingRepository.countBookingsInRange(thisStart, thisEnd);
                 Double totalRevenueThisMonth = bookingRepository.sumRevenueInRange(thisStart, thisEnd);
 
-                Long totalCampingSites = campingSiteRepository.count();
+                Long totalCampingSites = campingInforRepository.count();
                 Long totalReviews = reviewRepository.count();
 
                 return new DashBoardResponse(
