@@ -14,14 +14,14 @@ public enum ResponseCode {
     CACHE_FAILED("VAL_500", "Cache failed" , HttpStatus.INTERNAL_SERVER_ERROR),
 
     // ======= User Errors =======
-    USER_NOT_FOUND("USR_404", "Invalid email", HttpStatus.NOT_FOUND),
+    USER_NOT_FOUND("USR_404", "email không đúng, vui lòng thử lại", HttpStatus.NOT_FOUND),
     USER_TIME_EXCEEDED("USR_409", "User reached time limit a day", HttpStatus.CONFLICT),
-    EMAIL_ALREADY_EXISTS("USR_409", "Email already exists", HttpStatus.CONFLICT),
-    INVALID_CURRENT_PASSWORD("USR_401", "Invalid current password", HttpStatus.UNAUTHORIZED),
-    INVALID_PASSWORD("USR_401", "Invalid password", HttpStatus.NOT_FOUND),
-    PASSWORD_CONFIRM_NOT_MATCH("USR_400", "New password and confirm password do not match", HttpStatus.BAD_REQUEST),
+    EMAIL_ALREADY_EXISTS("USR_409", "Email đã tồn tại, vui lòng nhập email khác", HttpStatus.CONFLICT),
+    INVALID_CURRENT_PASSWORD("USR_401", "Mật khẩu hiện tại không đúng", HttpStatus.UNAUTHORIZED),
+    INVALID_PASSWORD("USR_401", "Mật khẩu không đúng, vui lòng thử lại", HttpStatus.NOT_FOUND),
+    PASSWORD_CONFIRM_NOT_MATCH("USR_400", "Mật khẩu mới và xác nhận mật khẩu không trùng nhau", HttpStatus.BAD_REQUEST),
     USER_DISABLE("USR_401", "User disabled" , HttpStatus.UNAUTHORIZED),
-    ACCOUNT_LOCKED("USR_401", "Account locked" , HttpStatus.UNAUTHORIZED),
+    ACCOUNT_LOCKED("USR_401", "Tài khoản của bạn đã bị khóa do đăng nhập sai quá 3 lần" , HttpStatus.UNAUTHORIZED),
     ALREADY_ACTIVATED("USR_409", "Account already activated", HttpStatus.CONFLICT),
     PERMISSION_DENIED("USR_403", "Have permission to action", HttpStatus.FORBIDDEN),
 
@@ -29,9 +29,9 @@ public enum ResponseCode {
     VALIDATION_FAILED("VAL_422", "Validation failed", HttpStatus.UNPROCESSABLE_ENTITY),
 
     // ======= OTP Errors =======
-    INVALID_OTP("OTP_400", "Invalid OTP", HttpStatus.BAD_REQUEST),
-    EXPIRED_OTP("OTP_401", "OTP has expired", HttpStatus.BAD_REQUEST),
-    OTP_ALREADY_USED("OTP_409", "OTP has already been used", HttpStatus.BAD_REQUEST),
+    INVALID_OTP("OTP_400", "OTP không chính xác", HttpStatus.BAD_REQUEST),
+    EXPIRED_OTP("OTP_401", "OTP đã hết hạn", HttpStatus.BAD_REQUEST),
+    OTP_ALREADY_USED("OTP_409", "OTP đã được sử dụng", HttpStatus.BAD_REQUEST),
 
     // ======= Role Errors =======
     ROLE_NOT_FOUND("ROL_404", "Role not found", HttpStatus.NOT_FOUND),

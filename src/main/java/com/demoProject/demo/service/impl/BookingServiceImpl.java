@@ -340,7 +340,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         // 🔹 4. Chỉ cho phép hủy nếu booking đang ở trạng thái "PENDING"
-        if (!"PENDING".equalsIgnoreCase(booking.getStatus().name())) {
+        if (!"CONFIRMED".equalsIgnoreCase(booking.getStatus().name()) && !"PENDING".equalsIgnoreCase(booking.getStatus().name())) {
             throw new IllegalArgumentException("Only PENDING bookings can be cancelled");
         }
 
@@ -368,6 +368,28 @@ public class BookingServiceImpl implements BookingService {
 
         // 🔹 5. Cập nhật trạng thái sang "CANCELLED"
         booking.setStatus(BookingStatus.COMPLETED);
+        booking.setUpdatedAt(LocalDateTime.now());
+
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    @Transactional
+    public void confirmBoking(String bookingId) {
+        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        User user = userRepository.findByUserInfoEmail(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 🔹 2. Tìm booking theo ID
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+        // 🔹 4. Chỉ cho phép hủy nếu booking đang ở trạng thái "PENDING"
+        if (!"CONFIRMED".equalsIgnoreCase(booking.getStatus().name()) && !"PENDING".equalsIgnoreCase(booking.getStatus().name())) {
+            throw new IllegalArgumentException("Only PENDING bookings can be cancelled");
+        }
+        // 🔹 5. Cập nhật trạng thái sang "CANCELLED"
+        booking.setStatus(BookingStatus.CONFIRMED);
         booking.setUpdatedAt(LocalDateTime.now());
 
         bookingRepository.save(booking);

@@ -74,4 +74,16 @@ public class BookingController {
         }
     }
 
+    @PutMapping("/{bookingId}/confirmed")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> confirmedBooking(@PathVariable String bookingId) {
+        try {
+            bookingService.completedBooking(bookingId);
+            return ResponseEntity.ok("Booking confirm successfully");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().body("Failed to confirm booking");
+        }
+    }
 }

@@ -28,7 +28,7 @@ public class PartnerServiceImpl implements PartnerService {
     private final CampingGalleryRepository campingGalleryRepository;
     private final RoleRepository roleRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public RegisterPartnerResponse registerPartner(RegisterPartnerRequest request) {
 
         // ✅ 1. Kiểm tra email trùng
@@ -90,7 +90,7 @@ public class PartnerServiceImpl implements PartnerService {
                 .capacity(0)
                 .revenue(0.0)
                 .rate(0.0)
-                .active(true)
+                .active(false)
                 .createdAt(LocalDateTime.now())
                 .build();
         campingInforRepository.save(campingInfor);
